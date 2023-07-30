@@ -3,6 +3,11 @@ from models.obstacle import Obstacle
 from models.player import Player
 from models.vector import Vector2
 from models.collider import *
+### git add .
+### git commit -m "(message)"
+### git push
+
+
 
 
 def onAppStart(app):
