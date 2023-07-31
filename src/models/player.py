@@ -21,10 +21,13 @@ class Player(GameObject):
             app.pressSpace = False
             self.isGrounded = False
             self.yVelocity += app.gravityInterval
+            print('stop')
         elif not self.isGrounded:
+            print(app.player.position.y)
             app.pressSpace = True
             self.yVelocity = 0
             self.isGrounded = True
+           
             
     def setYVelocity(self):
         self.position.y += self.yVelocity

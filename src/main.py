@@ -13,9 +13,9 @@ from models.collider import *
 def onAppStart(app):
         app.width = 1280
         app.height = 720
-        app.jumpHeight = 10
+        app.jumpHeight = 15
         app.stepsPerSecond = 70
-        app.gravityInterval = 0.8
+        app.gravityInterval = 1
         
         
         restart(app)
@@ -24,7 +24,7 @@ def onAppStart(app):
 
 def restart(app):
     app.debug = False
-    
+    app.model = False
     
     app.floor = 623
     app.ground = 623
@@ -38,7 +38,7 @@ def restart(app):
     
 
 def player(app):
-    app.playerWidth  = 40
+    app.playerWidth  =  40
     app.playerHeight = 40
     app.playerY = app.floor - app.playerHeight
     app.playerX = app.width//3
@@ -70,8 +70,10 @@ def redrawAll(app):
     
 def debug(app):
     if app.debug:
-        drawLine(0,app.floor,app.width,app.floor)
-       
+        drawLine(0,app.floor,app.width,app.floor, fill = 'red')
+        drawLine(0,app.ground,app.width,app.ground, fill = 'blue')
+
+
 
 def drawBoard(app):
     drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioMap.jpeg', 0, 0)
@@ -81,14 +83,12 @@ def drawBoard(app):
     #drawLine(0,app.ceiling, app.width, app.ceiling)
 
 
-
-
 #------PLAYER CHARACTER--------
 def drawPlayer(app):
-    #drawRect(app.playerX, app.playerY, app.playerWidth,
-             #app.playerHeight, fill = 'blue', border = app.playerColor)
-    drawImage('/Users/alexlgv/Documents/15-112/TermProject/GeometryDashPlayer.png',app.player.position.x,app.player.position.y)
-    
+    if app.model:
+        drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MINIMARIO.png',app.player.position.x,app.player.position.y)
+    else:
+        drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/GeometryDashPlayer.png', app.player.position.x, app.player.position.y)
 def drawBlock(app):
     for obstacle in Obstacle.obstacles:
         
@@ -102,6 +102,8 @@ def onKeyPress(app,key):
         app.paused = not app.paused
     if key == 'd':
         app.debug = not app.debug
+    if key == 't':
+        app.model = not app.model
         
 def onKeyHold(app, keys):
     if 'space' in keys and app.pressSpace: 
@@ -110,16 +112,15 @@ def onKeyHold(app, keys):
         app.player.moveRight()
     if 'left' in keys:
         app.player.moveLeft()
-        
-
 
         
 def onStep(app):
     #print(app.player.position.y)
     if not app.paused:
+        app.player.applyGravity(app)
         Obstacle.moveObstacle()
         app.block.generateObstacles(app)
-        app.player.applyGravity(app)
+        
         app.player.setYVelocity()
         app.block.outOfBounds(app)
 

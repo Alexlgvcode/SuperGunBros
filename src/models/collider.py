@@ -10,10 +10,10 @@ class Collider:
 
 class ColliderManager:
 
-    colliders: List[Union[Collider, Tuple[Collider]]] = []
+    colliders = []
 
     @staticmethod
-    def collides(collider1: Collider, collider2: Collider) -> bool:
+    def collides(collider1, collider2):
      
         if collider1 != collider2:
             left0 = collider1.position.x
@@ -32,7 +32,6 @@ class ColliderManager:
     def isCollision():
         for collider1 in ColliderManager.colliders:
             for collider2 in ColliderManager.colliders:
-             
                 if ColliderManager.collides(collider1, collider2):
                     print('True')
                     return True

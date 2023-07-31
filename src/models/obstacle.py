@@ -11,11 +11,12 @@ class Obstacle(GameObject):
         super().__init__(position, height,width, color)
         Obstacle.obstacles.append(self)
         ColliderManager.colliders.append(self.collider)
-        
+
+
     @staticmethod
     def generateObstacles(app):
         #obstacleHeight = random.randint(app.blockHeight, 200)
-        if Obstacle.obstacles[-1].position.x + app.blockWidth + 300< app.width:
+        if Obstacle.obstacles[-1].position.x + app.blockWidth + 600< app.width:
             Obstacle(Vector2(app.width, app.ground-app.blockHeight), app.blockWidth,app.blockHeight,app.blockColor)
         
         
