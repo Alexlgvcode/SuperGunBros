@@ -14,9 +14,9 @@ class Obstacle(GameObject):
         
     @staticmethod
     def generateObstacles(app):
-        obstacleHeight = random.randint(app.blockHeight, 200)
-        if Obstacle.obstacles[-1].position.x + app.blockWidth <= app.width:
-            Obstacle(Vector2(app.width, app.ground-app.blockHeight), app.blockWidth,obstacleHeight,app.blockColor)
+        #obstacleHeight = random.randint(app.blockHeight, 200)
+        if Obstacle.obstacles[-1].position.x + app.blockWidth + 300< app.width:
+            Obstacle(Vector2(app.width, app.ground-app.blockHeight), app.blockWidth,app.blockHeight,app.blockColor)
         
         
       

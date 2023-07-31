@@ -14,26 +14,29 @@ class ColliderManager:
 
     @staticmethod
     def collides(collider1: Collider, collider2: Collider) -> bool:
+     
         if collider1 != collider2:
-            if type(collider1) == tuple and type(collider1) != type(collider2):
-                for collider in collider1:
-                    left0 = collider.position.x
-                    top0 = collider.position.y
-                    left1 = collider2.position.x
-                    top1 = collider2.position.y
-                    right0 = collider.position.x + collider.width
-                    bottom0 = collider.position.y + collider.height
-                    right1 = collider2.position.x + collider2.width
-                    bottom1 = collider2.position.y + collider2.height
-                    if ((right1 >= left0) and (right0 >= left1)
-                        and (bottom1 >= top0) and (bottom0 >= top1)):
-                        return True
+            left0 = collider1.position.x
+            top0 = collider1.position.y
+            left1 = collider2.position.x
+            top1 = collider2.position.y
+            right0 = collider1.position.x + collider2.width
+            bottom0 = collider1.position.y + collider1.height
+            right1 = collider2.position.x + collider2.width
+            bottom1 = collider2.position.y + collider2.height
+            if ((right1 >= left0) and (right0 >= left1)
+                and (bottom1 >= top0) and (bottom0 >= top1)):
+                return True
 
     @staticmethod
     def isCollision():
         for collider1 in ColliderManager.colliders:
             for collider2 in ColliderManager.colliders:
+             
                 if ColliderManager.collides(collider1, collider2):
+                    print('True')
                     return True
         return False
+    
+    
                     

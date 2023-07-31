@@ -11,8 +11,8 @@ from models.collider import *
 
 
 def onAppStart(app):
-        app.width = 1000
-        app.height = 600
+        app.width = 1280
+        app.height = 720
         app.jumpHeight = 10
         app.stepsPerSecond = 70
         app.gravityInterval = 0.8
@@ -26,8 +26,8 @@ def restart(app):
     app.debug = False
     
     
-    app.floor = 421
-    app.ground = 421
+    app.floor = 623
+    app.ground = 623
     app.maxHeight = 110
     app.ceiling = app.ground - app.maxHeight
     app.pressSpace = True
@@ -74,7 +74,7 @@ def debug(app):
        
 
 def drawBoard(app):
-    drawImage('/Users/alexlgv/Documents/15-112/TermProject/GeometryDashBackground.png', 0, 0)
+    drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioMap.jpeg', 0, 0)
     #drawImage('/Users/alexlgv/Documents/15-112/TermProject/minecraftHill.png', 0 ,0)
     #drawRect(0,0,app.width,app.height, fill = 'lightblue')
     #drawRect(0,app.ground, app.width ,app.height, fill = 'black')
@@ -91,8 +91,9 @@ def drawPlayer(app):
     
 def drawBlock(app):
     for obstacle in Obstacle.obstacles:
+        
         drawRect(obstacle.position.x,obstacle.position.y, obstacle.width,obstacle.height, fill = obstacle.color, border = 'black')
-
+        
 
 def onKeyPress(app,key):
     if key == 'r':
@@ -121,9 +122,10 @@ def onStep(app):
         app.player.applyGravity(app)
         app.player.setYVelocity()
         app.block.outOfBounds(app)
-        
+
         if ColliderManager.isCollision():
             print('Game Over')
+        
         
     
 runApp()
