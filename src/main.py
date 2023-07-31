@@ -86,7 +86,7 @@ def drawBoard(app):
 #------PLAYER CHARACTER--------
 def drawPlayer(app):
     if app.model:
-        drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MINIMARIO.png',app.player.position.x,app.player.position.y)
+        drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/Untitled-3.png',app.player.position.x,app.player.position.y)
     else:
         drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/GeometryDashPlayer.png', app.player.position.x, app.player.position.y)
 def drawBlock(app):
@@ -104,6 +104,12 @@ def onKeyPress(app,key):
         app.debug = not app.debug
     if key == 't':
         app.model = not app.model
+        if not app.model:
+            app.playerWidth  =  40
+            app.playerHeight = 40
+        else:
+            app.player.width =  52
+            app.player.height = 55
         
 def onKeyHold(app, keys):
     if 'space' in keys and app.pressSpace: 

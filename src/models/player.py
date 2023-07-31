@@ -1,4 +1,5 @@
 from models.gameObject import GameObject
+from models.collider import ColliderManager
 
 class Player(GameObject):
     
@@ -6,6 +7,7 @@ class Player(GameObject):
         super().__init__(position, height, width, color)
         self.yVelocity = 0
         self.isGrounded = True
+        ColliderManager.colliders.append(self.collider)
     
     def jump(self, app):
         self.yVelocity = -app.jumpHeight
@@ -21,9 +23,7 @@ class Player(GameObject):
             app.pressSpace = False
             self.isGrounded = False
             self.yVelocity += app.gravityInterval
-            print('stop')
         elif not self.isGrounded:
-            print(app.player.position.y)
             app.pressSpace = True
             self.yVelocity = 0
             self.isGrounded = True
