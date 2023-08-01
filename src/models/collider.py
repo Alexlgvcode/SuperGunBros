@@ -45,21 +45,26 @@ class ColliderObstacle:
     def collides(app, collider1, collider2):
      
         if collider1 != collider2:
-            left0 = collider1.position.x
-            top0 = collider1.position.y
-            left1 = collider2.position.x
-            top1 = collider2.position.y
-            right0 = collider1.position.x + collider2.width
-            bottom0 = collider1.position.y + collider1.height
-            right1 = collider2.position.x + collider2.width
-            bottom1 = collider2.position.y + collider2.height
-            if ((right1 >= left0) and (right0 >= left1)
-                and (bottom1 >= top0) and (bottom0 >= top1)):
-                if bottom0 >= top1:
-                    app.floor = app.ground - app.block.height
+            left1 = collider1.position.x
+            top1 = collider1.position.y
+            left2 = collider2.position.x
+            top2 = collider2.position.y
+            right1 = collider1.position.x + collider2.width
+            bottom1 = collider1.position.y + collider1.height
+            right2 = collider2.position.x + collider2.width
+            bottom2 = collider2.position.y + collider2.height
+            #if ((right1 >= left0) and (right0 >= left1)
+                #and (bottom1 >= top0) and (bottom0 >= top1)):
+            if bottom1 >= top2 and (left1 >= left2) and (left1 <= right2 ):
+                app.floor = app.ground - app.block.height
             else:
                 app.floor = app.ground
                 
+            if right1 >= left2 and right1 <= (left2+right2)//2:
+                collider1.position.x = collider2.position.x - collider1.width
+                
+            #if right2 >= left1 and left2:
+               #collider1.position.x = right2
 
         
 
