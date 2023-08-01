@@ -1,5 +1,5 @@
 from models.gameObject import GameObject
-from models.collider import ColliderManager
+from models.collider import *
 
 class Player(GameObject):
     
@@ -7,7 +7,7 @@ class Player(GameObject):
         super().__init__(position, height, width, color)
         self.yVelocity = 0
         self.isGrounded = True
-        ColliderManager.colliders.append(self.collider)
+        ColliderObstacle.collidersObstacle.append(self.collider)
     
     def jump(self, app):
         self.yVelocity = -app.jumpHeight
@@ -18,6 +18,9 @@ class Player(GameObject):
     def moveRight(self):
         self.position.x += 10  
 
+
+
+    
     def applyGravity(self, app):
         if not (app.player.position.y + app.player.height >= app.floor):
             app.pressSpace = False
@@ -27,7 +30,8 @@ class Player(GameObject):
             app.pressSpace = True
             self.yVelocity = 0
             self.isGrounded = True
-           
+        
+        
             
     def setYVelocity(self):
         self.position.y += self.yVelocity

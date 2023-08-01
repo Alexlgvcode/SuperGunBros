@@ -25,6 +25,7 @@ def onAppStart(app):
 def restart(app):
     app.debug = False
     app.model = False
+    app.count = 0
     
     app.floor = 623
     app.ground = 623
@@ -50,7 +51,7 @@ def player(app):
     app.player = Player(Vector2(app.playerX,app.playerY), app.playerHeight,app.playerWidth, app.playerColor)
 
 def obstacle(app):
-    app.blockWidth = 40
+    app.blockWidth = 120
     app.blockHeight = 40
     app.blockX  = app.width
     app.blockY = app.ground - app.blockHeight
@@ -119,20 +120,26 @@ def onKeyHold(app, keys):
     if 'left' in keys:
         app.player.moveLeft()
 
+#def wall(app):
+    #if ColliderObstacle.isCollision():
+        #app.player.position.x = 
         
 def onStep(app):
     #print(app.player.position.y)
     if not app.paused:
+        app.count +=1
+        
         app.player.applyGravity(app)
-        Obstacle.moveObstacle()
+        app.block.moveObstacle()
         app.block.generateObstacles(app)
         
         app.player.setYVelocity()
         app.block.outOfBounds(app)
+        ColliderObstacle.isCollision(app)
 
-        if ColliderManager.isCollision():
-            print('Game Over')
+        #app.player.updateFloor(app)
+        #if ColliderObstacle.isCollision():
+            #print('Game Over')
         
-        
-    
+
 runApp()
