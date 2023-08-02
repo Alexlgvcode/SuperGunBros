@@ -42,8 +42,8 @@ class ColliderObstacle:
     collidersObstacle = []
 
     @staticmethod
-    def collides(app, collider1, collider2):
-     
+    def collides(app,collider1, collider2):
+        
         if collider1 != collider2:
             left1 = collider1.position.x
             top1 = collider1.position.y
@@ -53,15 +53,17 @@ class ColliderObstacle:
             bottom1 = collider1.position.y + collider1.height
             right2 = collider2.position.x + collider2.width
             bottom2 = collider2.position.y + collider2.height
-            #if ((right1 >= left0) and (right0 >= left1)
-                #and (bottom1 >= top0) and (bottom0 >= top1)):
-            if bottom1 >= top2 and (left1 >= left2) and (left1 <= right2 ):
-                app.floor = app.ground - app.block.height
+            if ((left1 <= right2) and (right1 >= left2) and (bottom1 >= top2)and (top1 <= bottom2)):
+                print('Hit')
+                app.floor = app.ground - collider2.height
             else:
+                print('Not')
                 app.floor = app.ground
                 
-            if right1 >= left2 and right1 <= (left2+right2)//2:
-                collider1.position.x = collider2.position.x - collider1.width
+            
+                
+            #if right1 >= left2 and right1 <= (left2+right2)//2:
+                #collider1.position.x = collider2.position.x - collider1.width
                 
             #if right2 >= left1 and left2:
                #collider1.position.x = right2
@@ -71,8 +73,9 @@ class ColliderObstacle:
 
     @staticmethod
     def isCollision(app):
-        for collider1 in ColliderObstacle.collidersObstacle:
-            ColliderObstacle.collides(app,app.player.collider, collider1)
+        #print(ColliderObstacle.collidersObstacle)
+        for collider2 in ColliderObstacle.collidersObstacle:
+            ColliderObstacle.collides(app,app.player.collider,collider2 )
                 
                 
     

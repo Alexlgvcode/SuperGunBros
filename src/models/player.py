@@ -15,6 +15,12 @@ class Player(GameObject):
     def moveLeft(self):
         self.position.x -= 10
     
+    def sprintLeft(self):
+        self.position.x -= 20
+    def sprintRight(self):
+        self.position.x += 20
+        
+    
     def moveRight(self):
         self.position.x += 10  
 

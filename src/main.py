@@ -3,6 +3,8 @@ from models.obstacle import Obstacle
 from models.player import Player
 from models.vector import Vector2
 from models.collider import *
+from PIL import Image
+
 ### git add .
 ### git commit -m "(message)"
 ### git push
@@ -13,10 +15,12 @@ from models.collider import *
 def onAppStart(app):
         app.width = 1280
         app.height = 720
-        app.jumpHeight = 15
+        app.jumpHeight = 20
         app.stepsPerSecond = 70
         app.gravityInterval = 1
         
+        app.backgroundImage = Image.open('assets/MarioFullMap.png')
+        app.backgroundX = 0
         
         restart(app)
     
@@ -26,6 +30,7 @@ def restart(app):
     app.debug = False
     app.model = False
     app.count = 0
+    app.scrollX = 0 
     
     app.floor = 623
     app.ground = 623
@@ -34,8 +39,11 @@ def restart(app):
     app.pressSpace = True
     app.paused = False
     
+    
+    
     player(app)
     obstacle(app)
+    
     
 
 def player(app):
@@ -57,7 +65,8 @@ def obstacle(app):
     app.blockY = app.ground - app.blockHeight
     app.blockRight = app.blockX + app.blockWidth
     app.blockBottom = app.blockY + app.blockHeight
-    app.blockColor = 'green'
+    app.blockColor = None
+    
     app.block = Obstacle(Vector2(app.blockX, app.blockY),app.blockHeight, app.blockWidth, app.blockColor)
     
 
@@ -66,6 +75,7 @@ def redrawAll(app):
     drawBoard(app)
     drawPlayer(app)
     drawBlock(app)
+    
     debug(app)
     
     
@@ -73,11 +83,19 @@ def debug(app):
     if app.debug:
         drawLine(0,app.floor,app.width,app.floor, fill = 'red')
         drawLine(0,app.ground,app.width,app.ground, fill = 'blue')
-
+        for i in range(0, app.height,50):
+            drawLine(0,i,app.width,i)
+            drawLabel(f'{i}', 20, i+20)
+        for i in range(0,app.width,50):
+            drawLine(i,0,i,app.height)
+            drawLabel(f'{i}', i +20, 20)
+        drawLabel(f'x:{app.player.position.x}, y: {app.player.position.y}', app.centerPlayerX , app.centerPlayerY- 40, size = 12,fill = 'white')
+        drawLabel(f'x:{Obstacle.obstacles(app)[0].position.x}, y:{Obstacle.obstacles(app)[0].position.y}',Obstacle.obstacles(app)[0].position.x,Obstacle.obstacles(app)[0].position.y - 40, size = 12, fill = 'white')
+        #app.scrollX = 0drawRect(50,app.ground-)
 
 
 def drawBoard(app):
-    drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioMap.jpeg', 0, 0)
+    drawImage(CMUImage(app.backgroundImage),app.scrollX,0)
     #drawImage('/Users/alexlgv/Documents/15-112/TermProject/minecraftHill.png', 0 ,0)
     #drawRect(0,0,app.width,app.height, fill = 'lightblue')
     #drawRect(0,app.ground, app.width ,app.height, fill = 'black')
@@ -90,11 +108,12 @@ def drawPlayer(app):
         drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/Untitled-3.png',app.player.position.x,app.player.position.y)
     else:
         drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/GeometryDashPlayer.png', app.player.position.x, app.player.position.y)
+
+
 def drawBlock(app):
-    for obstacle in Obstacle.obstacles:
-        
+    for obstacle in Obstacle.obstacles(app):
         drawRect(obstacle.position.x,obstacle.position.y, obstacle.width,obstacle.height, fill = obstacle.color, border = 'black')
-        
+    
 
 def onKeyPress(app,key):
     if key == 'r':
@@ -115,11 +134,36 @@ def onKeyPress(app,key):
 def onKeyHold(app, keys):
     if 'space' in keys and app.pressSpace: 
         app.player.jump(app)
-    if 'right' in keys:
-        app.player.moveRight()
-    if 'left' in keys:
-        app.player.moveLeft()
-
+    if 's'in keys:
+        
+        if 'left' in keys and app.player.position.x>0:
+            if app.scrollX< 0:
+                app.scrollX += 20
+            else:
+                app.player.sprintLeft()
+                
+        if 'right'in keys :
+            if app.scrollX< 0:
+                app.scrollX -= 20
+            else:
+                app.player.sprintRight()
+                
+    else:      
+        if 'right' in keys :
+            if app.player.position.x <app.width//3:
+                app.player.moveRight()
+            else:
+                app.scrollX -= 12
+                
+        
+        if 'left' in keys and app.player.position.x >0:
+            if app.scrollX< 0:
+                app.scrollX += 12
+            else:
+                app.player.moveLeft()
+    
+    
+    
 #def wall(app):
     #if ColliderObstacle.isCollision():
         #app.player.position.x = 
@@ -130,13 +174,14 @@ def onStep(app):
         app.count +=1
         
         app.player.applyGravity(app)
-        app.block.moveObstacle()
-        app.block.generateObstacles(app)
+        
+        
         
         app.player.setYVelocity()
         app.block.outOfBounds(app)
         ColliderObstacle.isCollision(app)
-
+            
+        
         #app.player.updateFloor(app)
         #if ColliderObstacle.isCollision():
             #print('Game Over')
