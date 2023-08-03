@@ -7,7 +7,7 @@ class Player(GameObject):
         super().__init__(position, height, width, color)
         self.yVelocity = 0
         self.isGrounded = True
-        ColliderObstacle.collidersObstacle.append(self.collider)
+        #ColliderObstacle.collidersObstacle.append(self.collider)
     
     def jump(self, app):
         self.yVelocity = -app.jumpHeight
@@ -28,14 +28,27 @@ class Player(GameObject):
 
     
     def applyGravity(self, app):
+        if app.player.position.y < app.ceiling:
+            app.falling = True
+            app.player.position.y = app.ceiling
+            
+        if app.falling:
+            app.pressSpace = False
+            self.isGrounded = False
+            self.yVelocity += app.gravityInterval
         if not (app.player.position.y + app.player.height >= app.floor):
             app.pressSpace = False
             self.isGrounded = False
             self.yVelocity += app.gravityInterval
+        
         elif not self.isGrounded:
+            self.isGrounded = True
+            app.falling = False
+            app.player.position.y = app.floor-app.player.height
             app.pressSpace = True
             self.yVelocity = 0
-            self.isGrounded = True
+            
+            
         
         
             
