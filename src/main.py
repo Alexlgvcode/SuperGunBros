@@ -15,7 +15,7 @@ from PIL import Image
 def onAppStart(app):
         app.width = 1280
         app.height = 720
-        app.jumpHeight = 20
+        app.jumpHeight = 30
         app.stepsPerSecond = 70
         app.gravityInterval = 1
         app.stopMovementLeft = False
@@ -117,7 +117,7 @@ def drawPlayer(app):
 
 def drawBlock(app):
     for obstacle in Obstacle.obstacles(app):
-        drawRect(obstacle.position.x,obstacle.position.y, obstacle.width,obstacle.height, fill = obstacle.color, border = 'white')
+        drawRect(obstacle.position.x,obstacle.position.y, obstacle.width,obstacle.height, fill = obstacle.color, border = None)
     for collider in ColliderObstacle.collidersObstacle:
         drawRect(collider.position.x, collider.position.y, collider.width, collider.height, fill = None, border = 'red')
         #drawRect(ColliderObstacle.collidersObstacle[0].position.x, ColliderObstacle.collidersObstacle[0].position.y, ColliderObstacle.collidersObstacle[0].width, ColliderObstacle.collidersObstacle[0].height, fill = None, border = 'red')
@@ -157,20 +157,20 @@ def onKeyHold(app, keys):
                 
     else:      
         if 'right' in keys and not app.stopMovementRight:
-            if app.player.position.x < app.width//3:
+            if app.player.position.x < app.width//3 or app.scrollX<= -8856:
                 app.player.moveRight()
-            else:
+            elif app.scrollX> -8856:
                 app.scrollX -= 12
                 
         
         if 'left' in keys and app.player.position.x >0 and not app.stopMovementLeft:
-            if app.scrollX < 0:
+            if app.scrollX < 0 and app.scrollX >= -8856:
                 app.scrollX += 12
             else:
                 app.player.moveLeft()
                 
     
-                
+    app.player.applyGravity(app)
     ColliderObstacle.isCollision(app)
     
 #def wall(app):
@@ -178,6 +178,7 @@ def onKeyHold(app, keys):
         #app.player.position.x = 
         
 def onStep(app):
+    print(app.scrollX)
     #print(app.player.position.y)
     if not app.paused:
         app.count +=1

@@ -42,7 +42,7 @@ class ColliderObstacle:
     collidersObstacle = []
 
     @staticmethod
-    def collidesBot(app,collider1, collider2):
+    def collidesVert(app,collider1, collider2):
         
         if collider1 != collider2:
             left1 = collider1.position.x
@@ -54,8 +54,8 @@ class ColliderObstacle:
             right2 = collider2.position.x + collider2.width
             bottom2 = collider2.position.y + collider2.height
             #print(f'left1:{left1}  right1:{right1} top1:{top1} bottom1:{bottom1}/ left2:{left2}  right2:{right2} top2:{top2} bottom2:{bottom2}/')
-            
-            if 3314 < left1<3418:
+           
+            if (3314 < left1 -app.scrollX<3415) or (4130 < left1 -app.scrollX < 4282):
                 app.floor = app.height + 100
                 return True
                 
@@ -63,27 +63,14 @@ class ColliderObstacle:
             if ((left1 < right2 and left1> left2) or (right1 > left2 and right1 < right2)) and (bottom1 < bottom2):
                 app.floor = collider2.position.y 
                 return True
-            else:
-                app.floor = app.ground
+    
                 
-    def collidesTop(app,collider1, collider2):
-        
-        if collider1 != collider2:
-            left1 = collider1.position.x
-            top1 = collider1.position.y
-            left2 = collider2.position.x
-            top2 = collider2.position.y
-            right1 = collider1.position.x + collider1.width
-            bottom1 = collider1.position.y + collider1.height
-            right2 = collider2.position.x + collider2.width
-            bottom2 = collider2.position.y + collider2.height
-            #print(f'left1:{left1}  right1:{right1} top1:{top1} bottom1:{bottom1}/ left2:{left2}  right2:{right2} top2:{top2} bottom2:{bottom2}/')
-                
-            if ((left1 < right2 and left1> left2) or (right1 > left2 and right1 < right2)) and (top1 >= bottom2):
+            elif ((left1 < right2 and left1> left2) or (right1 > left2 and right1 < right2)) and (top1 >= bottom2):
                 app.ceiling = bottom2
                 return True 
             else:
                 app.ceiling = 0
+                app.floor = app.ground
     def collidesLeft(app,collider1, collider2):
         
         if collider1 != collider2:
@@ -129,7 +116,9 @@ class ColliderObstacle:
     @staticmethod
     def isCollision(app):
         #print(ColliderObstacle.collidersObstacle)
-        
+        for collider2 in ColliderObstacle.collidersObstacle:
+            if ColliderObstacle.collidesVert(app,app.player.collider,collider2 ):
+                break
         for collider2 in ColliderObstacle.collidersObstacle:
             if ColliderObstacle.collidesLeft(app,app.player.collider,collider2 ):
                 break
@@ -141,12 +130,7 @@ class ColliderObstacle:
                 break
             else:
                 app.stopMovementRight = False
-        for collider2 in ColliderObstacle.collidersObstacle:
-            if ColliderObstacle.collidesBot(app,app.player.collider,collider2 ):
-                break
-        for collider2 in ColliderObstacle.collidersObstacle:
-            if ColliderObstacle.collidesTop(app,app.player.collider,collider2 ):
-                break
+        
         
                 
                 

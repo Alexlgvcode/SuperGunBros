@@ -32,7 +32,7 @@ class Player(GameObject):
             app.falling = True
             app.player.position.y = app.ceiling
             
-        if app.falling:
+        elif app.falling:
             app.pressSpace = False
             self.isGrounded = False
             self.yVelocity += app.gravityInterval
