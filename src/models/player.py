@@ -25,12 +25,14 @@ class Player(GameObject):
         self.position.x += 10  
 
 
-
+    def playerDeath(self,app):
+        if self.position.y >= app.height:
+            app.gameOver = True
     
     def applyGravity(self, app):
-        if app.player.position.y < app.ceiling:
+        if self.position.y < app.ceiling:
             app.falling = True
-            app.player.position.y = app.ceiling
+            self.position.y = app.ceiling
             
         elif app.falling:
             app.pressSpace = False

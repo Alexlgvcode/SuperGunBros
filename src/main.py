@@ -3,7 +3,7 @@ from models.obstacle import Obstacle
 from models.player import Player
 from models.vector import Vector2
 from models.collider import *
-from PIL import Image
+from PIL import Image, ImageFont, ImageDraw
 
 ### git add .
 ### git commit -m "(message)"
@@ -28,12 +28,20 @@ def onAppStart(app):
         
 
 def restart(app):
+    app.paused = False
+    app.gameOver = False
+    app.gameStartScreen = True
+    app.howToPlayScreen = False
+    app.hoverStart = False
+    app.hoverHowTo = False
+    
+    
+    
     app.debug = False
     app.model = False
     app.count = 0
     app.scrollX = 0 
-    app.gameStartScreen = True
-    app.hover = False
+
 
     
     app.falling = False
@@ -42,7 +50,7 @@ def restart(app):
     app.maxHeight = 110
     app.ceiling = 0
     app.pressSpace = True
-    app.paused = False
+    
     
     
     
@@ -76,17 +84,28 @@ def obstacle(app):
     
 
     
-def redrawAll(app): 
-    if app.gameStartScreen:
+def redrawAll(app):
+    if app.howToPlayScreen:
+        drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/HowToPlay.png',0,0) 
+        
+    elif app.gameStartScreen:
         drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/GameStartScreen.png',0,0)
-        if app.hover:
+        if app.hoverHowTo:
+            drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/rulesHover.png',480,400)
+        else:
+            drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/Rules.png',480,400)
+        if app.hoverStart:
             drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/StartButtonHover.png',520,500)
         else:
             drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/StartButton.png',520, 500)
+    elif app.gameOver:
+        drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/GameOverScreen.png',0,0)
+    
     else:
         drawBoard(app)
         drawPlayer(app)
         drawBlock(app)
+        
     
     debug(app)
     
@@ -109,12 +128,11 @@ def debug(app):
 
 
 def drawBoard(app):
+    #fontPath = '/Users/alexlgv/Documents/15-112/SuperGunBros/src/Fonts/Super Mario Bros. 2.ttf'
+    #font = ImageFont.truetype(fontPath, size=30)
+    
     drawImage(CMUImage(app.backgroundImage),app.scrollX,0)
-    #drawImage('/Users/alexlgv/Documents/15-112/TermProject/minecraftHill.png', 0 ,0)
-    #drawRect(0,0,app.width,app.height, fill = 'lightblue')
-    #drawRect(0,app.ground, app.width ,app.height, fill = 'black')
-    #drawLine(0,app.ceiling, app.width, app.ceiling)
-
+    #drawLabel('Score:',50,50, font = font)
 
 #------PLAYER CHARACTER--------
 def drawPlayer(app):
@@ -135,7 +153,7 @@ def onKeyPress(app,key):
         restart(app)
     if key == 'p':
         app.paused = not app.paused
-    if key == 'd':
+    if key == 'l':
         app.debug = not app.debug
     if key == 't':
         app.model = not app.model
@@ -164,31 +182,40 @@ def onKeyHold(app, keys):
                     app.player.sprintRight()
                     
         else:      
-            if 'right' in keys and not app.stopMovementRight:
-                if app.player.position.x < app.width//3 or app.scrollX<= -8856:
+            if 'd' in keys and not app.stopMovementRight:
+                if app.player.position.x < app.width//2 or app.scrollX<= -8856:
                     app.player.moveRight()
                 elif app.scrollX> -8856:
                     app.scrollX -= 12
                     
             
-            if 'left' in keys and app.player.position.x >0 and not app.stopMovementLeft:
-                if app.scrollX < 0 and app.scrollX >= -8856:
-                    app.scrollX += 12
-                else:
+            if 'a' in keys and app.player.position.x >0 and not app.stopMovementLeft:
+                #if app.scrollX < 0 and app.scrollX >= -8856:
+                    #app.scrollX += 12
+                #else:
                     app.player.moveLeft()
         app.player.applyGravity(app)
+
         ColliderObstacle.isCollision(app)
     
 def onMousePress(app,mouseX, mouseY):
-    if 520 < mouseX  < 758 and 520 < mouseY< 604:
+    if 520 <= mouseX  <= 758 and 520 <= mouseY<= 604:
         app.gameStartScreen = False
+    if 480 <= mouseX <=790 and 400 <= mouseY<= 465:
+        app.howToPlayScreen = True
+        
         
 def onMouseMove(app,mouseX,mouseY):
     if 520 <= mouseX  <= 758 and 520 <= mouseY<= 604:
-        app.hover = True
-    else: 
-        app.hover = False
+        app.hoverStart = True
+
+        
     
+    elif 480 <= mouseX <=790 and 400 <= mouseY<= 465:
+        app.hoverHowTo = True
+    else:
+        app.hoverHowTo = False
+        app.hoverStart = False
 
     
     
@@ -197,14 +224,14 @@ def onMouseMove(app,mouseX,mouseY):
         #app.player.position.x = 
         
 def onStep(app):
-    print(app.scrollX)
+    
     #print(app.player.position.y)
     if not app.paused:
         app.count +=1
         app.player.applyGravity(app)
-        
         Obstacle.obstacles(app)
         app.player.setYVelocity()
+        app.player.playerDeath(app)
         #app.block.outOfBounds(app)
         
             

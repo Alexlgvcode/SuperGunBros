@@ -74,7 +74,7 @@ class ColliderObstacle:
             bottom2 = collider2.position.y + collider2.height
             #print(f'left1:{left1}  right1:{right1} top1:{top1} bottom1:{bottom1}/ left2:{left2}  right2:{right2} top2:{top2} bottom2:{bottom2}/')
            
-            if (3314 < left1 -app.scrollX<3415) or (4130 < left1 -app.scrollX < 4282):
+            if ((3314 < left1 -app.scrollX<3415 ) or (4130 < left1 -app.scrollX < 4282 ))and top1 > bottom2:
                 app.floor = app.height + 100
                 return True
                 
