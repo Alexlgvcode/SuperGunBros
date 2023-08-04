@@ -20,7 +20,6 @@ def onAppStart(app):
         app.gravityInterval = 1
         app.stopMovementLeft = False
         app.stopMovementRight = False
-        
         app.backgroundImage = Image.open('assets/MarioFullMap.png')
         app.backgroundX = 0
         
@@ -33,7 +32,9 @@ def restart(app):
     app.model = False
     app.count = 0
     app.scrollX = 0 
-    
+    app.gameStartScreen = True
+    app.hover = False
+
     
     app.falling = False
     app.floor = 623
@@ -76,9 +77,16 @@ def obstacle(app):
 
     
 def redrawAll(app): 
-    drawBoard(app)
-    drawPlayer(app)
-    drawBlock(app)
+    if app.gameStartScreen:
+        drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/GameStartScreen.png',0,0)
+        if app.hover:
+            drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/StartButtonHover.png',520,500)
+        else:
+            drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/StartButton.png',520, 500)
+    else:
+        drawBoard(app)
+        drawPlayer(app)
+        drawBlock(app)
     
     debug(app)
     
@@ -139,39 +147,50 @@ def onKeyPress(app,key):
             app.player.height = 55
         
 def onKeyHold(app, keys):
+    if not app.paused and not app.gameStartScreen:
+        if 'space' in keys and app.pressSpace: 
+            app.player.jump(app)
+        if 's'in keys:
+            if 'left' in keys and app.player.position.x>0 :
+                if app.scrollX< 0:
+                    app.scrollX += 20
+                else:
+                    app.player.sprintLeft()
+                    
+            if 'right'in keys and not app.stopMovementRight :
+                if app.scrollX< 0:
+                    app.scrollX -= 20
+                else:
+                    app.player.sprintRight()
+                    
+        else:      
+            if 'right' in keys and not app.stopMovementRight:
+                if app.player.position.x < app.width//3 or app.scrollX<= -8856:
+                    app.player.moveRight()
+                elif app.scrollX> -8856:
+                    app.scrollX -= 12
+                    
+            
+            if 'left' in keys and app.player.position.x >0 and not app.stopMovementLeft:
+                if app.scrollX < 0 and app.scrollX >= -8856:
+                    app.scrollX += 12
+                else:
+                    app.player.moveLeft()
+        app.player.applyGravity(app)
+        ColliderObstacle.isCollision(app)
     
-    if 'space' in keys and app.pressSpace: 
-        app.player.jump(app)
-    if 's'in keys:
-        if 'left' in keys and app.player.position.x>0 :
-            if app.scrollX< 0:
-                app.scrollX += 20
-            else:
-                app.player.sprintLeft()
-                
-        if 'right'in keys and not app.stopMovementRight :
-            if app.scrollX< 0:
-                app.scrollX -= 20
-            else:
-                app.player.sprintRight()
-                
-    else:      
-        if 'right' in keys and not app.stopMovementRight:
-            if app.player.position.x < app.width//3 or app.scrollX<= -8856:
-                app.player.moveRight()
-            elif app.scrollX> -8856:
-                app.scrollX -= 12
-                
+def onMousePress(app,mouseX, mouseY):
+    if 520 < mouseX  < 758 and 520 < mouseY< 604:
+        app.gameStartScreen = False
         
-        if 'left' in keys and app.player.position.x >0 and not app.stopMovementLeft:
-            if app.scrollX < 0 and app.scrollX >= -8856:
-                app.scrollX += 12
-            else:
-                app.player.moveLeft()
-                
+def onMouseMove(app,mouseX,mouseY):
+    if 520 <= mouseX  <= 758 and 520 <= mouseY<= 604:
+        app.hover = True
+    else: 
+        app.hover = False
     
-    app.player.applyGravity(app)
-    ColliderObstacle.isCollision(app)
+
+    
     
 #def wall(app):
     #if ColliderObstacle.isCollision():
@@ -182,8 +201,8 @@ def onStep(app):
     #print(app.player.position.y)
     if not app.paused:
         app.count +=1
-        
         app.player.applyGravity(app)
+        
         Obstacle.obstacles(app)
         app.player.setYVelocity()
         #app.block.outOfBounds(app)

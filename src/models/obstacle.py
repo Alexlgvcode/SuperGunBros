@@ -30,7 +30,14 @@ class Obstacle(GameObject):
                      Obstacle(Vector2(4085+ app.scrollX, app.ground),200, 50, app.blockColor),
                      Obstacle(Vector2(4286+ app.scrollX, app.ground),200, 50, app.blockColor),
                      Obstacle(Vector2(4375+ app.scrollX, app.ground - 385),50, 195, app.blockColor),
-                     Obstacle(Vector2(8710+ app.scrollX, app.ground -50),50, 400, app.blockColor),
+                     Obstacle(Vector2(4805 + app.scrollX,app.ground-193), 50,100, app.blockColor),
+                     Obstacle(Vector2(5674 + app.scrollX,app.ground-193), 50,50, app.blockColor),
+                     Obstacle(Vector2(5815 + app.scrollX,app.ground-381), 50,145, app.blockColor),
+                     Obstacle(Vector2(6154 + app.scrollX,app.ground-381), 50,195, app.blockColor),
+                     Obstacle(Vector2(6445 + app.scrollX,app.ground-50), 50,200, app.blockColor),
+                     Obstacle(Vector2(8710+ app.scrollX, app.ground -300),50, 400, app.blockColor),
+                     
+                     
                      ]
         ColliderObstacle.collidersObstacle = []
         for i in range(len(obstacles)):
