@@ -86,7 +86,7 @@ def obstacle(app):
     
 def redrawAll(app):
     if app.howToPlayScreen:
-        drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/HowToPlay.png',0,0) 
+        drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/SettingsPage.png',0,0) 
         
     elif app.gameStartScreen:
         drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/GameStartScreen.png',0,0)
@@ -203,19 +203,19 @@ def onMousePress(app,mouseX, mouseY):
         app.gameStartScreen = False
     if 480 <= mouseX <=790 and 400 <= mouseY<= 465:
         app.howToPlayScreen = True
+    if 500 <= mouseY <= 575 and 175 <= mouseX <= 250:
+        app.howToPlayScreen = False
         
         
 def onMouseMove(app,mouseX,mouseY):
     if 520 <= mouseX  <= 758 and 520 <= mouseY<= 604:
         app.hoverStart = True
-
-        
-    
     elif 480 <= mouseX <=790 and 400 <= mouseY<= 465:
         app.hoverHowTo = True
     else:
         app.hoverHowTo = False
         app.hoverStart = False
+    
 
     
     
