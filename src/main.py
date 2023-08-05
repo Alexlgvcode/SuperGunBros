@@ -20,7 +20,15 @@ def onAppStart(app):
         app.gravityInterval = 1
         app.stopMovementLeft = False
         app.stopMovementRight = False
-        app.backgroundImage = Image.open('assets/MarioFullMap.png')
+        app.backgroundImage1 = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioMap1.png')
+        app.backgroundImage2 = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioMap2.png')
+        app.backgroundImage3 = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioMap3.png')
+        app.backgroundImage4 = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioMap4.png')
+        app.backgroundImage5 = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioMap5.png')
+        app.backgroundImage6 = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioMap6.png')
+        app.backgroundImage7 = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioMap7.png')
+        app.backgroundImage8 = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioMap8.png')
+        
         app.backgroundX = 0
         
         restart(app)
@@ -39,7 +47,6 @@ def restart(app):
     
     app.debug = False
     app.model = False
-    app.count = 0
     app.scrollX = 0 
 
 
@@ -123,15 +130,38 @@ def debug(app):
             drawLabel(f'{i}', i +20, 20)
         drawLabel(f'x:{app.player.position.x}, y: {app.player.position.y}', app.centerPlayerX , app.centerPlayerY- 40, size = 12,fill = 'white')
         drawLabel(f'x:{Obstacle.obstacles(app)[0].position.x}, y:{Obstacle.obstacles(app)[0].position.y}',Obstacle.obstacles(app)[0].position.x,Obstacle.obstacles(app)[0].position.y - 40, size = 12, fill = 'white')
-        drawLabel(f'x:{app.scrollX}', app.centerPlayerX, app.centerPlayerY -100, size = 20,fill = 'white')
+        drawLabel(f'x:{app.scrollX}', app.centerPlayerX, app.centerPlayerY -100, size = 20,fill = 'black')
         #app.scrollX = 0drawRect(50,app.ground-)
 
 
 def drawBoard(app):
     #fontPath = '/Users/alexlgv/Documents/15-112/SuperGunBros/src/Fonts/Super Mario Bros. 2.ttf'
     #font = ImageFont.truetype(fontPath, size=30)
-    
-    drawImage(CMUImage(app.backgroundImage),app.scrollX,0)
+    if 0>= app.scrollX > -1296:
+        drawImage(CMUImage(app.backgroundImage1),app.scrollX,0)
+        drawImage(CMUImage(app.backgroundImage2),app.scrollX + app.width,0)
+    elif -1296 >= app.scrollX > -2556:
+        drawImage(CMUImage(app.backgroundImage2),app.scrollX+app.width ,0)
+        drawImage(CMUImage(app.backgroundImage3),app.scrollX+app.width*2 ,0)
+    elif -2556 >= app.scrollX > -3840:
+        drawImage(CMUImage(app.backgroundImage3),app.scrollX+app.width*2 ,0)
+        drawImage(CMUImage(app.backgroundImage4),app.scrollX+app.width*3 ,0)
+    elif -3840>= app.scrollX > -5112:
+        drawImage(CMUImage(app.backgroundImage4),app.scrollX+app.width*3 ,0)
+        drawImage(CMUImage(app.backgroundImage5),app.scrollX+app.width*4 ,0)
+    elif -5112>= app.scrollX >-6396:
+        drawImage(CMUImage(app.backgroundImage5),app.scrollX+app.width*4 ,0)
+        drawImage(CMUImage(app.backgroundImage6),app.scrollX+app.width*5 ,0)
+    elif -6396 >= app.scrollX > -7548:
+        drawImage(CMUImage(app.backgroundImage6),app.scrollX+app.width*5 ,0)
+        drawImage(CMUImage(app.backgroundImage7),app.scrollX+app.width*6 ,0)
+    elif -7548 >= app.scrollX >-8832:
+        drawImage(CMUImage(app.backgroundImage6),app.scrollX+app.width*5 ,0)
+        drawImage(CMUImage(app.backgroundImage7),app.scrollX+app.width*6 ,0)
+        drawImage(CMUImage(app.backgroundImage8),app.scrollX+(app.width*7 - 128) ,0)
+        
+    elif -8820>= app.scrollX:
+        drawImage(CMUImage(app.backgroundImage8),app.scrollX+(app.width*7 - 128) ,0)
     #drawLabel('Score:',50,50, font = font)
 
 #------PLAYER CHARACTER--------
@@ -182,15 +212,15 @@ def onKeyHold(app, keys):
                     app.player.sprintRight()
                     
         else:      
-            if 'd' in keys and not app.stopMovementRight:
-                if app.player.position.x < app.width//2 or app.scrollX<= -8856:
+            if 'd' in keys and not app.stopMovementRight and app.player.position.x + app.player.width< app.width:
+                if app.player.position.x < app.width//2 -100 or(app.scrollX <= -8832) :
                     app.player.moveRight()
-                elif app.scrollX> -8856:
+                elif app.scrollX> -8832:
                     app.scrollX -= 12
                     
             
             if 'a' in keys and app.player.position.x >0 and not app.stopMovementLeft:
-                #if app.scrollX < 0 and app.scrollX >= -8856:
+                if app.scrollX < 0 and app.scrollX >= -8832:
                     #app.scrollX += 12
                 #else:
                     app.player.moveLeft()
@@ -206,7 +236,7 @@ def onMousePress(app,mouseX, mouseY):
     if 500 <= mouseY <= 575 and 175 <= mouseX <= 250:
         app.howToPlayScreen = False
         
-        
+
 def onMouseMove(app,mouseX,mouseY):
     if 520 <= mouseX  <= 758 and 520 <= mouseY<= 604:
         app.hoverStart = True
@@ -215,31 +245,14 @@ def onMouseMove(app,mouseX,mouseY):
     else:
         app.hoverHowTo = False
         app.hoverStart = False
-    
-
-    
-    
-#def wall(app):
-    #if ColliderObstacle.isCollision():
-        #app.player.position.x = 
         
 def onStep(app):
-    
-    #print(app.player.position.y)
     if not app.paused:
-        app.count +=1
+        
         app.player.applyGravity(app)
         Obstacle.obstacles(app)
         app.player.setYVelocity()
         app.player.playerDeath(app)
         #app.block.outOfBounds(app)
-        
-            
-            
-        
-        #app.player.updateFloor(app)
-        #if ColliderObstacle.isCollision():
-            #print('Game Over')
-        
 
 runApp()
