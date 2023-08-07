@@ -13,7 +13,7 @@ class Player(GameObject):
         self.yVelocity = -app.jumpHeight
     
     def moveLeft(self):
-        self.position.x -= 10
+        self.position.x -= 15
     
     def sprintLeft(self):
         self.position.x -= 20
@@ -22,7 +22,7 @@ class Player(GameObject):
         
     
     def moveRight(self):
-        self.position.x += 10  
+        self.position.x += 15  
 
 
     def playerDeath(self,app):
@@ -45,9 +45,14 @@ class Player(GameObject):
         
         elif not self.isGrounded:
             self.isGrounded = True
+            app.playerIdle = True
+            app.playerRunRight = False
+            app.playerRunLeft = False
+            app.playerJump = False
             app.falling = False
             app.player.position.y = app.floor-app.player.height
             app.pressSpace = True
+
             self.yVelocity = 0
             
             
