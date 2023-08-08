@@ -28,20 +28,20 @@ def onAppStart(app):
     app.gravityInterval = 1
     app.stopMovementLeft = False
     app.stopMovementRight = False
-    app.backgroundImage1 = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioMap1.png')
-    app.backgroundImage2 = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioMap2.png')
-    app.backgroundImage3 = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioMap3.png')
-    app.backgroundImage4 = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioMap4.png')
-    app.backgroundImage5 = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioMap5.png')
-    app.backgroundImage6 = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioMap6.png')
-    app.backgroundImage7 = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioMap7.png')
-    app.backgroundImage8 = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioMap8.png')
-    app.Fireball = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/Fireball.png')
+    app.backgroundImage1 = Image.open('assets/MarioMap1.png')
+    app.backgroundImage2 = Image.open('assets/MarioMap2.png')
+    app.backgroundImage3 = Image.open('assets/MarioMap3.png')
+    app.backgroundImage4 = Image.open('assets/MarioMap4.png')
+    app.backgroundImage5 = Image.open('assets/MarioMap5.png')
+    app.backgroundImage6 = Image.open('assets/MarioMap6.png')
+    app.backgroundImage7 = Image.open('assets/MarioMap7.png')
+    app.backgroundImage8 = Image.open('assets/MarioMap8.png')
+    app.Fireball = Image.open('assets/Fireball.png')
     
     
     
-    spritestripright = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioRun2.png')
-    spritestripLeft = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioRunLeft2.png')
+    spritestripright = Image.open('assets/MarioRun2.png')
+    spritestripLeft = Image.open('assets/MarioRunLeft2.png')
     app.sprites = []
     app.spritesLeft = []
     for i in range(3):
@@ -60,6 +60,7 @@ def onAppStart(app):
         
 
 def restart(app):
+
     app.ticks = 0
     app.paused = False
     app.gameOver = False
@@ -132,24 +133,24 @@ def obstacle(app):
     
 def redrawAll(app):
     if app.howToPlayScreen:
-        drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/SettingsPage.png',0,0) 
+        drawImage('assets/SettingsPage.png',0,0) 
         
     elif app.gameWonScreen:
-        drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/GameWonScreen.png',0,0)
+        drawImage('assets/GameWonScreen.png',0,0)
         drawLabel(f'{app.score}',app.width//2, 400, fill = 'white', size = 20)
     elif app.gameStartScreen:
-        drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/GameStartScreen.png',0,0)
+        drawImage('assets/GameStartScreen.png',0,0)
         if app.hoverHowTo:
-            drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/rulesHover.png',480,400)
+            drawImage('assets/rulesHover.png',480,400)
         else:
-            drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/Rules.png',480,400)
+            drawImage('assets/Rules.png',480,400)
         if app.hoverStart:
-            drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/StartButtonHover.png',520,500)
+            drawImage('assets/StartButtonHover.png',520,500)
         else:
-            drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/StartButton.png',520, 500)
+            drawImage('assets/StartButton.png',520, 500)
         
     elif app.gameOver:
-        drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/GameOverScreen.png',0,0)
+        drawImage('assets/GameOverScreen.png',0,0)
     
     
     else:
@@ -178,11 +179,12 @@ def debug(app):
         drawLabel(f'x:{app.scrollX}', app.centerPlayerX, app.centerPlayerY -100, size = 20,fill = 'black')
         for collider in ColliderObstacle.collidersObstacle:
             drawRect(collider.position.x, collider.position.y, collider.width, collider.height, fill = None, border = 'red')
-        
+        for collider in ColliderEnemy.collidersEnemy:
+            drawRect(collider.position.x, collider.position.y, collider.width, collider.height, fill = None, border = 'red')
 
 
 def drawBoard(app):
-    #fontPath = '/Users/alexlgv/Documents/15-112/SuperGunBros/src/Fonts/Super Mario Bros. 2.ttf'
+    #fontPath = 'Fonts/Super Mario Bros. 2.ttf'
     #font = ImageFont.truetype(fontPath, size=30)
     if 0>= app.scrollX > -1296:
         drawImage(CMUImage(app.backgroundImage1),app.scrollX,0)
@@ -226,11 +228,11 @@ def drawPlayer(app):
             spriteLeft = app.spritesLeft[app.spriteCounter]
             drawImage(spriteLeft,app.player.position.x, app.player.position.y)
         elif app.playerIdle:
-            drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioIdle.png',app.player.position.x,app.player.position.y)
+            drawImage('assets/MarioIdle.png',app.player.position.x,app.player.position.y)
         elif app.playerJumpRight:
-            drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioJump.png',app.player.position.x, app.player.position.y)
+            drawImage('assets/MarioJump.png',app.player.position.x, app.player.position.y)
         elif app.playerJumpLeft:
-            drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioJumpLeft.png',app.player.position.x, app.player.position.y)
+            drawImage('assets/MarioJumpLeft.png',app.player.position.x, app.player.position.y)
     #drawRect(app.player.position.x,app.player.position.y,app.player.width,app.player.height, fill = 'black')
 
 def drawEnemy(app):
@@ -242,7 +244,7 @@ def drawEnemy(app):
 
 def drawBullets():
    for bullet in Bullet.bullets:
-       drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/Fireball.png',bullet.position.x,bullet.position.y)
+       drawImage('assets/Fireball.png',bullet.position.x,bullet.position.y)
 
         #drawRect(ColliderObstacle.collidersObstacle[0].position.x, ColliderObstacle.collidersObstacle[0].position.y, ColliderObstacle.collidersObstacle[0].width, ColliderObstacle.collidersObstacle[0].height, fill = None, border = 'red')
 
@@ -354,7 +356,7 @@ def onStep(app):
         if ColliderEnemy.isCollision(app):
             Bullet.bullets.remove(app.bulletRemove)
             #print(True)
-            #Enemy.enemies(app).remove(app.enemyRemove)
+            Enemy.enemies(app).remove(app.enemyRemove)
         app.player.applyGravity(app)
         Obstacle.obstacles(app)
         app.player.setYVelocity()

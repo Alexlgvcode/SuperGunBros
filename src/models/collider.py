@@ -18,7 +18,7 @@ class ColliderEnemy:
             bottom1 = collider1.position.y + collider1.height
             right2 = collider2.position.x + collider2.width
             bottom2 = collider2.position.y + collider2.height
-            if ((left1 > left2 and left1<right2) or (right1<right2 and right1>left2)) and ((bottom1>top2 and bottom1<bottom2) or (top1<bottom2 and top1>top2)):
+            if (right2 >= left1) and (right1>= left2) and (bottom2>top1) and (bottom1 >= top2):
                 return True
 
     def isCollision(app):
