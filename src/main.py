@@ -4,6 +4,7 @@ from models.player import Player
 from models.vector import Vector2
 from models.collider import *
 from models.bullet import *
+from models.enemy import *
 from PIL import Image
 import os, pathlib
 
@@ -38,6 +39,7 @@ def onAppStart(app):
     app.Fireball = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/Fireball.png')
     
     
+    
     spritestripright = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioRun2.png')
     spritestripLeft = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioRunLeft2.png')
     app.sprites = []
@@ -69,6 +71,8 @@ def restart(app):
     app.hoverHowTo = False
     
     app.bulletRemove = None
+    app.enemyRemove = None
+    
     app.bullet = None
     app.playerHide = False
     app.playerIdle = True
@@ -84,8 +88,10 @@ def restart(app):
 
     
     app.falling = False
+    
     app.floor = 623
     app.ground = 623
+    app.bulletFloor = 623
     app.maxHeight = 110
     app.ceiling = 0
     app.pressSpace = True
@@ -150,7 +156,7 @@ def redrawAll(app):
         drawBoard(app)
         drawPlayer(app)
         drawBullets()
-        
+        drawEnemy(app)
     
     debug(app)
     
@@ -160,6 +166,7 @@ def debug(app):
         drawLine(0,app.floor,app.width,app.floor, fill = 'red')
         drawLine(0,app.ground,app.width,app.ground, fill = 'blue')
         drawLine(0, app.ceiling,app.width,app.ceiling,fill = 'yellow')
+        drawLine(0,app.bulletFloor,app.width,app.bulletFloor, fill= 'green')
         for i in range(0, app.height,50):
             drawLine(0,i,app.width,i)
             drawLabel(f'{i}', 20, i+20)
@@ -171,7 +178,7 @@ def debug(app):
         drawLabel(f'x:{app.scrollX}', app.centerPlayerX, app.centerPlayerY -100, size = 20,fill = 'black')
         for collider in ColliderObstacle.collidersObstacle:
             drawRect(collider.position.x, collider.position.y, collider.width, collider.height, fill = None, border = 'red')
-        #app.scrollX = 0drawRect(50,app.ground-)
+        
 
 
 def drawBoard(app):
@@ -226,6 +233,11 @@ def drawPlayer(app):
             drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioJumpLeft.png',app.player.position.x, app.player.position.y)
     #drawRect(app.player.position.x,app.player.position.y,app.player.width,app.player.height, fill = 'black')
 
+def drawEnemy(app):
+    for enemy in Enemy.enemies(app):
+        drawRect(enemy.position.x,enemy.position.y, 70, 70, fill = 'black')
+   # for enemy in ColliderEnemy.collidersEnemy:
+       # drawRect()
 
 
 def drawBullets():
@@ -339,6 +351,10 @@ def onStep(app):
         
         if ColliderBullet.isCollisionObstacle(app):
             Bullet.bullets.remove(app.bulletRemove)
+        if ColliderEnemy.isCollision(app):
+            Bullet.bullets.remove(app.bulletRemove)
+            #print(True)
+            #Enemy.enemies(app).remove(app.enemyRemove)
         app.player.applyGravity(app)
         Obstacle.obstacles(app)
         app.player.setYVelocity()

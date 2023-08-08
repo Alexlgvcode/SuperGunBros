@@ -23,14 +23,14 @@ class Bullet(GameObject):
             Bullet.applyGravity(app,Bullet.bullets[i])
             
     def applyGravity( app,bullet):    
-        if not ( bullet.position.y + bullet.height >= app.ground):
+        if not ( bullet.position.y + bullet.height >= app.bulletFloor):
                 #print(bullet.position.x, bullet.position.y, bullet.isGrounded)
                 bullet.isGrounded = False
                 bullet.yVelocity += app.gravityInterval
                 
         elif not bullet.isGrounded:
             bullet.isGrounded = True
-            bullet.position.y = app.ground - bullet.height
+            bullet.position.y = app.bulletFloor - bullet.height
             bullet.yVelocity = 0
             Bullet.jump(bullet)
             

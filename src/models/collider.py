@@ -5,8 +5,35 @@ class Collider:
         self.position = position
         self.height = height
         self.width = width
-        
+class ColliderEnemy:
+    collidersEnemy =[] 
+    
+    def collides(collider1,collider2):
+        if collider1 != collider2:
+            left1 = collider1.position.x
+            top1 = collider1.position.y
+            left2 = collider2.position.x
+            top2 = collider2.position.y
+            right1 = collider1.position.x + collider2.width
+            bottom1 = collider1.position.y + collider1.height
+            right2 = collider2.position.x + collider2.width
+            bottom2 = collider2.position.y + collider2.height
+            if ((left1 > left2 and left1<right2) or (right1<right2 and right1>left2)) and ((bottom1>top2 and bottom1<bottom2) or (top1<bottom2 and top1>top2)):
+                return True
 
+    def isCollision(app):
+        for collider2 in ColliderEnemy.collidersEnemy:  
+            if ColliderEnemy.collides(app.player.collider, collider2):
+                app.gameOver =True
+                break
+        for collider1 in ColliderBullet.collidersBulletObstacle:
+            for collider2 in ColliderEnemy.collidersEnemy:  
+                if ColliderEnemy.collides(collider1, collider2):
+                    ColliderEnemy.collidersEnemy.remove(collider2)
+                    ColliderBullet.collidersBulletObstacle.remove(collider1)
+                    app.bulletRemove = collider1
+                    app.enemyRemove = collider2
+                    return True
 
 class ColliderBullet:
 
@@ -14,21 +41,36 @@ class ColliderBullet:
     
 
     @staticmethod
-    def collides(collider1, collider2):
+    def collidesBot(app,collider1, collider2):
+        if collider1 != collider2:
+            left1 = collider1.position.x
+            top1 = collider1.position.y
+            left2 = collider2.position.x
+            top2 = collider2.position.y
+            right1 = collider1.position.x + collider2.width
+            bottom1 = collider1.position.y + collider1.height
+            right2 = collider2.position.x + collider2.width
+            bottom2 = collider2.position.y + collider2.height
+            if ((left1 < right2 and left1> left2) or (right1 > left2 and right1 < right2)) and (bottom1 < bottom2):
+                app.bulletFloor = collider2.position.y
+                return True
+            else:
+                app.bulletFloor = app.ground
+                
+            
+    def collidesSide(collider1, collider2):
      
         if collider1 != collider2:
-            left0 = collider1.position.x
-            top0 = collider1.position.y
-            left1 = collider2.position.x
-            top1 = collider2.position.y
-            right0 = collider1.position.x + collider2.width
-            bottom0 = collider1.position.y + collider1.height
-            right1 = collider2.position.x + collider2.width
-            bottom1 = collider2.position.y + collider2.height
-            if ((right1 >= left0) and (right0 >= left1)
-                and (bottom1 >= top0) and (bottom0 >= top1)):
+            left1 = collider1.position.x
+            top1 = collider1.position.y
+            left2 = collider2.position.x
+            top2 = collider2.position.y
+            right1 = collider1.position.x + collider2.width
+            bottom1 = collider1.position.y + collider1.height
+            right2 = collider2.position.x + collider2.width
+            bottom2 = collider2.position.y + collider2.height
+            if ((left1 < right2 and left1> left2) or (right1 > left2 and right1 < right2)) and (bottom1 < bottom2 and top1>=top2):
                 return True
-
     # def collidesBot(app):
     #     for collider1 in ColliderBullet.collidersBulletObstacle:
     #             if ColliderBullet.collides(collider1):
@@ -36,12 +78,21 @@ class ColliderBullet:
 
     @staticmethod
     def isCollisionObstacle(app):
+        
         for collider1 in ColliderObstacle.collidersObstacle:
             for collider2 in ColliderBullet.collidersBulletObstacle:
-                if ColliderBullet.collides(collider1, collider2):
-                    ColliderBullet.collidersBulletObstacle.remove(collider2)
-                    app.bulletRemove = collider2
+                if ColliderBullet.collidesBot(app,collider1, collider2):
+                    
+                    break
+        for collider1 in ColliderBullet.collidersBulletObstacle:
+            for collider2 in ColliderObstacle.collidersObstacle:
+                if ColliderBullet.collidesSide(collider1, collider2):
+                    ColliderBullet.collidersBulletObstacle.remove(collider1)
+                    app.bulletRemove = collider1
                     return True
+                    
+        
+                    
 
     
 
@@ -94,6 +145,7 @@ class ColliderObstacle:
     
             else:
                 app.floor = app.ground
+                
     def collidesLeft(app,collider1, collider2):
         
         if collider1 != collider2:

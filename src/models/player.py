@@ -7,7 +7,7 @@ class Player(GameObject):
         super().__init__(position, height, width, color)
         self.yVelocity = 0
         self.isGrounded = True
-        #ColliderObstacle.collidersObstacle.append(self.collider)
+       
     
     def jump(self, app):
         self.yVelocity = -app.jumpHeight
