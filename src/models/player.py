@@ -13,7 +13,7 @@ class Player(GameObject):
         self.yVelocity = -app.jumpHeight
     
     def moveLeft(self):
-        self.position.x -= 15
+        self.position.x -= 8
     
     def sprintLeft(self):
         self.position.x -= 20
@@ -22,11 +22,21 @@ class Player(GameObject):
         
     
     def moveRight(self):
-        self.position.x += 15  
+        self.position.x += 8
 
+    def playerWin(self,app):
+        if self.position.x >= 626 and app.scrollX <= -8836:
+            
+            if app.player.position.x <= 930:
+                Player.moveRight(self)
+            elif app.player.position.x >=930:
+                app.playerHide = True
+                app.gameWon = True
+                app.gameWonScreen = True
 
+    
     def playerDeath(self,app):
-        if self.position.y >= app.height:
+        if self.position.y >= app.height or app.timeLeft <= 0 :
             app.gameOver = True
     
     def applyGravity(self, app):
@@ -55,10 +65,7 @@ class Player(GameObject):
 
             self.yVelocity = 0
             
-            
-        
         
             
     def setYVelocity(self):
         self.position.y += self.yVelocity
-    

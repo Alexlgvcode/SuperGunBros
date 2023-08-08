@@ -3,6 +3,7 @@ from models.obstacle import Obstacle
 from models.player import Player
 from models.vector import Vector2
 from models.collider import *
+from models.bullet import *
 from PIL import Image
 import os, pathlib
 
@@ -22,7 +23,7 @@ def onAppStart(app):
     app.width = 1280
     app.height = 720
     app.jumpHeight = 30
-    app.stepsPerSecond = 70
+    app.stepsPerSecond = 50
     app.gravityInterval = 1
     app.stopMovementLeft = False
     app.stopMovementRight = False
@@ -34,6 +35,8 @@ def onAppStart(app):
     app.backgroundImage6 = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioMap6.png')
     app.backgroundImage7 = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioMap7.png')
     app.backgroundImage8 = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioMap8.png')
+    app.Fireball = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/Fireball.png')
+    
     
     spritestripright = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioRun2.png')
     spritestripLeft = Image.open('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioRunLeft2.png')
@@ -55,13 +58,19 @@ def onAppStart(app):
         
 
 def restart(app):
+    app.ticks = 0
     app.paused = False
     app.gameOver = False
+    app.gameWon = False
     app.gameStartScreen = True
     app.howToPlayScreen = False
+    app.gameWonScreen =False
     app.hoverStart = False
     app.hoverHowTo = False
     
+    app.bulletRemove = None
+    app.bullet = None
+    app.playerHide = False
     app.playerIdle = True
     app.playerRunRight = False
     app.playerRunLeft = False
@@ -81,7 +90,8 @@ def restart(app):
     app.ceiling = 0
     app.pressSpace = True
     
-    
+    app.score = 0
+    app.timeLeft = 400
     
     
     player(app)
@@ -118,6 +128,9 @@ def redrawAll(app):
     if app.howToPlayScreen:
         drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/SettingsPage.png',0,0) 
         
+    elif app.gameWonScreen:
+        drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/GameWonScreen.png',0,0)
+        drawLabel(f'{app.score}',app.width//2, 400, fill = 'white', size = 20)
     elif app.gameStartScreen:
         drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/GameStartScreen.png',0,0)
         if app.hoverHowTo:
@@ -128,13 +141,15 @@ def redrawAll(app):
             drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/StartButtonHover.png',520,500)
         else:
             drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/StartButton.png',520, 500)
+        
     elif app.gameOver:
         drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/GameOverScreen.png',0,0)
+    
     
     else:
         drawBoard(app)
         drawPlayer(app)
-        drawBlock(app)
+        drawBullets()
         
     
     debug(app)
@@ -154,6 +169,8 @@ def debug(app):
         drawLabel(f'x:{app.player.position.x}, y: {app.player.position.y}', app.centerPlayerX , app.centerPlayerY- 40, size = 12,fill = 'white')
         drawLabel(f'x:{Obstacle.obstacles(app)[0].position.x}, y:{Obstacle.obstacles(app)[0].position.y}',Obstacle.obstacles(app)[0].position.x,Obstacle.obstacles(app)[0].position.y - 40, size = 12, fill = 'white')
         drawLabel(f'x:{app.scrollX}', app.centerPlayerX, app.centerPlayerY -100, size = 20,fill = 'black')
+        for collider in ColliderObstacle.collidersObstacle:
+            drawRect(collider.position.x, collider.position.y, collider.width, collider.height, fill = None, border = 'red')
         #app.scrollX = 0drawRect(50,app.ground-)
 
 
@@ -182,34 +199,39 @@ def drawBoard(app):
         drawImage(CMUImage(app.backgroundImage6),app.scrollX+app.width*5 ,0)
         drawImage(CMUImage(app.backgroundImage7),app.scrollX+app.width*6 ,0)
         drawImage(CMUImage(app.backgroundImage8),app.scrollX+(app.width*7 - 128) ,0)
-        
     elif -8820>= app.scrollX:
         drawImage(CMUImage(app.backgroundImage8),app.scrollX+(app.width*7 - 128) ,0)
-    #drawLabel('Score:',50,50, font = font)
-
+    drawLabel(f'MARIO',200,40, size = 30 )
+    drawLabel(f'Score:{app.score}',200,70, size = 30 )
+    drawLabel(f'WORLD',app.width//2,40, size = 30 )
+    drawLabel(f'1-1',app.width//2,70, size = 30 )
+    drawLabel(f'TIME',1000, 40, size = 30 )
+    drawLabel(f'{app.timeLeft}',1000,70, size = 30 )
+    
+    
 #------PLAYER CHARACTER--------
 def drawPlayer(app):
-    if app.playerRunRight:
-        sprite = app.sprites[app.spriteCounter]
-        drawImage(sprite,app.player.position.x, app.player.position.y)
-    elif app.playerRunLeft:
-        spriteLeft = app.spritesLeft[app.spriteCounter]
-        drawImage(spriteLeft,app.player.position.x, app.player.position.y)
-    elif app.playerIdle:
-        drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioIdle.png',app.player.position.x,app.player.position.y)
-    elif app.playerJumpRight:
-        drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioJump.png',app.player.position.x, app.player.position.y)
-    elif app.playerJumpLeft:
-        drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioJumpLeft.png',app.player.position.x, app.player.position.y)
+    if not app.playerHide:
+        if app.playerRunRight:
+            sprite = app.sprites[app.spriteCounter]
+            drawImage(sprite,app.player.position.x, app.player.position.y)
+        elif app.playerRunLeft:
+            spriteLeft = app.spritesLeft[app.spriteCounter]
+            drawImage(spriteLeft,app.player.position.x, app.player.position.y)
+        elif app.playerIdle:
+            drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioIdle.png',app.player.position.x,app.player.position.y)
+        elif app.playerJumpRight:
+            drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioJump.png',app.player.position.x, app.player.position.y)
+        elif app.playerJumpLeft:
+            drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/MarioJumpLeft.png',app.player.position.x, app.player.position.y)
     #drawRect(app.player.position.x,app.player.position.y,app.player.width,app.player.height, fill = 'black')
 
 
 
-def drawBlock(app):
-    for obstacle in Obstacle.obstacles(app):
-        drawRect(obstacle.position.x,obstacle.position.y, obstacle.width,obstacle.height, fill = obstacle.color, border = None)
-    for collider in ColliderObstacle.collidersObstacle:
-        drawRect(collider.position.x, collider.position.y, collider.width, collider.height, fill = None, border = 'red')
+def drawBullets():
+   for bullet in Bullet.bullets:
+       drawImage('/Users/alexlgv/Documents/15-112/SuperGunBros/src/assets/Fireball.png',bullet.position.x,bullet.position.y)
+
         #drawRect(ColliderObstacle.collidersObstacle[0].position.x, ColliderObstacle.collidersObstacle[0].position.y, ColliderObstacle.collidersObstacle[0].width, ColliderObstacle.collidersObstacle[0].height, fill = None, border = 'red')
 
 def onKeyPress(app,key):
@@ -224,6 +246,8 @@ def onKeyPress(app,key):
         app.paused = not app.paused
     if key == 'l':
         app.debug = not app.debug
+    if key == 'w':
+        Bullet(Vector2(app.player.position.x+ app.player.width, app.player.position.y + (app.player.height//2)),43,42, 'red' )
     if key == 't':
         app.model = not app.model
         if not app.model:
@@ -236,60 +260,36 @@ def onKeyPress(app,key):
 def onKeyHold(app, keys):
     app.keys = keys
     if not app.paused and not app.gameStartScreen:
-        if 'space' in keys and app.pressSpace: 
-            app.playerJump = True
-            app.player.jump(app)
-        if 's'in keys:
-            if 'left' in keys and app.player.position.x>0 :
-                if app.scrollX< 0:
-                    app.scrollX += 20
-                else:
-                    app.player.sprintLeft()
-                    
-            if 'right'in keys and not app.stopMovementRight :
-                if app.scrollX< 0:
-                    app.scrollX -= 20
-                else:
-                    app.player.sprintRight()
-                    
-        else:   
-
+        if 'd' in app.keys and not app.stopMovementRight and app.player.position.x + app.player.width< app.width:
+            if 'space' not in app.keys:
+                app.playerRunRight = True
+                app.playerIdle = False
+            if app.player.position.x < app.width//2 -100 or(app.scrollX <= -8832) :
+                app.player.moveRight()
+            elif app.scrollX> -8832:
+                app.scrollX -= 9
                 
-
-            
-            if 'd' in app.keys and not app.stopMovementRight and app.player.position.x + app.player.width< app.width:
+        
+        elif 'a' in app.keys and app.player.position.x >0 and not app.stopMovementLeft:
+            if app.scrollX <= 0 and app.scrollX >= -8832:
+                app.player.moveLeft()
                 if 'space' not in app.keys:
-                    app.playerRunRight = True
+                    app.playerRunLeft = True
                     app.playerIdle = False
-                if app.player.position.x < app.width//2 -100 or(app.scrollX <= -8832) :
-                    app.player.moveRight()
-                elif app.scrollX> -8832:
-                    app.scrollX -= 20
-                    
+        if 'space' in app.keys and app.pressSpace: 
             
-            elif 'a' in app.keys and app.player.position.x >0 and not app.stopMovementLeft:
-                if app.scrollX <= 0 and app.scrollX >= -8832:
-                    app.player.moveLeft()
-                    if 'space' not in app.keys:
-                        app.playerRunLeft = True
-                        app.playerIdle = False
-            if 'space' in app.keys and app.pressSpace: 
+            if 'a' in app.keys:
+                app.playerJumpLeft = True
+                app.playerIdle = False
+                app.playerRunRight = False
+                app.playerRunLeft = False
                 
-                if 'a' in app.keys:
-                    app.playerJumpLeft = True
+            elif 'd' in app.keys:
+                    app.playerJumpRight = True
                     app.playerIdle = False
                     app.playerRunRight = False
                     app.playerRunLeft = False
-                    
-                elif 'd' in app.keys:
-                        app.playerJumpRight = True
-                        app.playerIdle = False
-                        app.playerRunRight = False
-                        app.playerRunLeft = False
-                app.player.jump(app)
-                    
-            
-
+            app.player.jump(app)
             
         app.player.applyGravity(app)
 
@@ -327,15 +327,27 @@ def onMouseMove(app,mouseX,mouseY):
         app.hoverStart = False
         
 def onStep(app):    
-    if not app.paused:
-
-        print(app.keys, app.playerIdle)
+    if not app.paused and not app.gameStartScreen and not app.gameOver and not app.playerHide:
+        app.ticks +=1
+        if app.ticks %5== 0 :
+            app.spriteCounter = (1 + app.spriteCounter) % len(app.sprites)
+        if app.ticks %10 ==0:
+             app.timeLeft -=1
+ 
+        #print(app.keys, app.playerIdle)
         playerIdle(app)
-        app.spriteCounter = (1 + app.spriteCounter) % len(app.sprites)
+        
+        if ColliderBullet.isCollisionObstacle(app):
+            Bullet.bullets.remove(app.bulletRemove)
         app.player.applyGravity(app)
         Obstacle.obstacles(app)
         app.player.setYVelocity()
         app.player.playerDeath(app)
+        app.player.playerWin(app)
+        
+
+        Bullet.moveBullets(app)
+    
         #app.block.outOfBounds(app)
     
 

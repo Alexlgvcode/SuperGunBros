@@ -1,4 +1,4 @@
-from typing import List, Union, Tuple
+#from models.bullet import *
 
 class Collider:
     def __init__(self, position, height, width):
@@ -10,7 +10,8 @@ class Collider:
 
 class ColliderBullet:
 
-    collidersBullet = []
+    collidersBulletObstacle = []
+    
 
     @staticmethod
     def collides(collider1, collider2):
@@ -28,14 +29,22 @@ class ColliderBullet:
                 and (bottom1 >= top0) and (bottom0 >= top1)):
                 return True
 
+    # def collidesBot(app):
+    #     for collider1 in ColliderBullet.collidersBulletObstacle:
+    #             if ColliderBullet.collides(collider1):
+                    
 
     @staticmethod
-    def isCollision():
-        for collider1 in ColliderBullet.collidersBullet:
-            for collider2 in ColliderBullet.collidersBullet:
+    def isCollisionObstacle(app):
+        for collider1 in ColliderObstacle.collidersObstacle:
+            for collider2 in ColliderBullet.collidersBulletObstacle:
                 if ColliderBullet.collides(collider1, collider2):
+                    ColliderBullet.collidersBulletObstacle.remove(collider2)
+                    app.bulletRemove = collider2
                     return True
-        return False
+
+    
+
     
 class ColliderObstacle:
 
@@ -74,7 +83,7 @@ class ColliderObstacle:
             bottom2 = collider2.position.y + collider2.height
             #print(f'left1:{left1}  right1:{right1} top1:{top1} bottom1:{bottom1}/ left2:{left2}  right2:{right2} top2:{top2} bottom2:{bottom2}/')
            
-            if ((3314 < left1 -app.scrollX<3415 ) or (4130 < left1 -app.scrollX < 4282 ))and top1 > bottom2:
+            if ((3314 < left1 -app.scrollX<3415 ) or (4130 < left1 -app.scrollX < 4282 )or (7335<left1 - app.scrollX < 7433))and top1 > bottom2:
                 app.floor = app.height + 100
                 return True
                 
