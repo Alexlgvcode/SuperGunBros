@@ -25,14 +25,17 @@ class Player(GameObject):
         self.position.x += 8
 
     def playerWin(self,app):
-        if self.position.x >= 626 and app.scrollX <= -8836:
+        if self.position.x >= 626 and app.scrollX <= -8836 and not app.bossBattle:
             
             if app.player.position.x <= 930:
                 Player.moveRight(self)
             elif app.player.position.x >=930:
-                app.playerHide = True
-                app.gameWon = True
-                app.gameWonScreen = True
+                app.bossBattle = True
+                app.bossBattleStart = True
+            
+        if app.bossBattleStart and app.player.position.x < 184:
+            Player.moveRight(self)
+            
 
     
     def playerDeath(self,app):
@@ -66,6 +69,10 @@ class Player(GameObject):
             self.yVelocity = 0
             
         
+    def powerUpOn(app):
+        if -8335 > app.player.position.x +app.scrollX> -8375 and 400<app.player.position.y<440:
+            app.powerUp = True
             
     def setYVelocity(self):
         self.position.y += self.yVelocity
+

@@ -1,4 +1,4 @@
-#from models.bullet import *
+
 
 class Collider:
     def __init__(self, position, height, width):
@@ -20,8 +20,45 @@ class ColliderEnemy:
             bottom2 = collider2.position.y + collider2.height
             if (right2 >= left1) and (right1>= left2) and (bottom2>top1) and (bottom1 >= top2):
                 return True
+        
+        
 
+    def collidesLeft(app,collider1, collider2):
+        
+        if collider1 != collider2:
+            left1 = collider1.position.x
+            top1 = collider1.position.y
+            left2 = collider2.position.x
+            top2 = collider2.position.y
+            right1 = collider1.position.x + collider1.width
+            bottom1 = collider1.position.y + collider1.height
+            right2 = collider2.position.x + collider2.width
+            bottom2 = collider2.position.y + collider2.height
+            #print(f'left1:{left1}  right1:{right1} top1:{top1} bottom1:{bottom1}/ left2:{left2}  right2:{right2} top2:{top2} bottom2:{bottom2}/')
+        
+            if (left1 <= right2 and left1>=left2) and (top1>=top2 and bottom1 <= bottom2):
+                return True
+
+
+    def collidesRight(app,collider1, collider2):
+        
+        if collider1 != collider2:
+            left1 = collider1.position.x
+            top1 = collider1.position.y
+            left2 = collider2.position.x
+            top2 = collider2.position.y
+            right1 = collider1.position.x + collider1.width
+            bottom1 = collider1.position.y + collider1.height
+            right2 = collider2.position.x + collider2.width
+            bottom2 = collider2.position.y + collider2.height
+            #print(f'left1:{left1}  right1:{right1} top1:{top1} bottom1:{bottom1}/ left2:{left2}  right2:{right2} top2:{top2} bottom2:{bottom2}/')
+            
+            if (right1 >= left2 and right1 <= right2) and (top1>=top2 and bottom1 <= bottom2):
+                return True
+            
+    
     def isCollision(app):
+
         for collider2 in ColliderEnemy.collidersEnemy:  
             if ColliderEnemy.collides(app.player.collider, collider2):
                 app.gameOver =True
@@ -32,9 +69,11 @@ class ColliderEnemy:
                     ColliderEnemy.collidersEnemy.remove(collider2)
                     ColliderBullet.collidersBulletObstacle.remove(collider1)
                     app.bulletRemove = collider1
-                    app.enemyRemove = collider2
+                    app.enemies.remove(collider2)
+                    app.score +=50
                     return True
 
+        
 class ColliderBullet:
 
     collidersBulletObstacle = []
@@ -71,9 +110,7 @@ class ColliderBullet:
             bottom2 = collider2.position.y + collider2.height
             if ((left1 < right2 and left1> left2) or (right1 > left2 and right1 < right2)) and (bottom1 < bottom2 and top1>=top2):
                 return True
-    # def collidesBot(app):
-    #     for collider1 in ColliderBullet.collidersBulletObstacle:
-    #             if ColliderBullet.collides(collider1):
+
                     
 
     @staticmethod
@@ -100,7 +137,6 @@ class ColliderBullet:
 class ColliderObstacle:
 
     collidersObstacle = []
-
     @staticmethod
     def collidesTop(app,collider1, collider2):
         

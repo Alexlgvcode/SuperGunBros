@@ -16,11 +16,15 @@ class Bullet(GameObject):
             bullet.yVelocity = -10
         
     def moveBullets(app):
-        for i in range(len(Bullet.bullets)):
+        if app.powerUp:
+             for i in range(len(Bullet.bullets)):
+                Bullet.bullets[i].position.x += 5
+        else:
+            for i in range(len(Bullet.bullets)):
 
-            Bullet.bullets[i].position.x += 5
-            Bullet.bullets[i].position.y += Bullet.bullets[i].yVelocity
-            Bullet.applyGravity(app,Bullet.bullets[i])
+                Bullet.bullets[i].position.x += 5
+                Bullet.bullets[i].position.y += Bullet.bullets[i].yVelocity
+                Bullet.applyGravity(app,Bullet.bullets[i])
             
     def applyGravity( app,bullet):    
         if not ( bullet.position.y + bullet.height >= app.bulletFloor):
