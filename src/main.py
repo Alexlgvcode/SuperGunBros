@@ -210,7 +210,7 @@ def rocket(app):
 def redrawAll(app):
 
     if app.howToPlayScreen:
-        drawImage('assets/SettingsPage.png',0,0) 
+        drawImage('assets/HowToPlay.png',0,0) 
         
     elif app.gameWonScreen:
         drawImage('assets/GameWonScreen.png',0,0)
