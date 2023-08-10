@@ -35,6 +35,8 @@ class Player(GameObject):
             
         if app.bossBattleStart and app.player.position.x < 184:
             Player.moveRight(self)
+        if app.bowserLife <= 0:
+            app.gameWon = True
             
 
     
@@ -68,10 +70,6 @@ class Player(GameObject):
 
             self.yVelocity = 0
             
-        
-    def powerUpOn(app):
-        if -8335 > app.player.position.x +app.scrollX> -8375 and 400<app.player.position.y<440:
-            app.powerUp = True
             
     def setYVelocity(self):
         self.position.y += self.yVelocity

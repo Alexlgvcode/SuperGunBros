@@ -18,7 +18,7 @@ class Bullet(GameObject):
     def moveBullets(app):
         if app.powerUp:
              for i in range(len(Bullet.bullets)):
-                Bullet.bullets[i].position.x += 5
+                Bullet.bullets[i].position.x += 10
         else:
             for i in range(len(Bullet.bullets)):
 
