@@ -1,7 +1,6 @@
 from models.gameObject import GameObject
 from models.vector import Vector2
 from models.collider import ColliderEnemy
-import random
 
 class Enemy(GameObject):
     
@@ -9,6 +8,7 @@ class Enemy(GameObject):
         super().__init__(position, height, width, color)
         self.startingX =self.position.x
         self.moveLeft = True
+        
     def load(app):
         
             
@@ -21,14 +21,18 @@ class Enemy(GameObject):
     
     
     def moveRight(enemy):
-        enemy.startingX += 4
+        movingRate = 4
+        enemy.startingX += movingRate
             
     def moveLeft(enemy):
-        enemy.startingX -= 4
+        movingRate = 4
+        enemy.startingX -= movingRate
     def slideLeft(self):
-        self.position.x -= 12
+        slidingRate = 12
+        self.position.x -= slidingRate
     def moveDown(enemy):
-        enemy.position.y+= 10
+        rocketSpeed = 10
+        enemy.position.y+= rocketSpeed
             
     def outOfBounds(app):
         for enemy in app.enemies:

@@ -35,8 +35,7 @@ class Player(GameObject):
             
         if app.bossBattleStart and app.player.position.x < 184:
             Player.moveRight(self)
-        if app.bowserLife <= 0:
-            app.gameWon = True
+        
             
 
     
@@ -45,14 +44,7 @@ class Player(GameObject):
             app.gameOver = True
     
     def applyGravity(self, app):
-        if self.position.y < app.ceiling:
-            app.falling = True
-            self.position.y = app.ceiling
-            
-        elif app.falling:
-            app.pressSpace = False
-            self.isGrounded = False
-            self.yVelocity += app.gravityInterval
+        
         if not (app.player.position.y + app.player.height >= app.floor):
             app.pressSpace = False
             self.isGrounded = False
