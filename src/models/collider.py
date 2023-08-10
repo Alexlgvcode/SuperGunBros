@@ -61,16 +61,29 @@ class ColliderEnemy:
             if ColliderEnemy.collides(app.player.collider, collider2):
                 app.gameOver =True
                 break
-        for collider1 in ColliderBullet.collidersBulletObstacle:
-            for collider2 in ColliderEnemy.collidersEnemy:  
-                if ColliderEnemy.collides(collider1, collider2) and not app.bossBattle:
-                    ColliderEnemy.collidersEnemy.remove(collider2)
-                    ColliderBullet.collidersBulletObstacle.remove(collider1)
-                    app.bulletRemove = collider1
-                    app.enemies.remove(collider2)
-                    app.score +=50
+        if not app.bossBattle:
+            for collider1 in ColliderBullet.collidersBulletObstacle:
+                for collider2 in ColliderEnemy.collidersEnemy:  
+                    if ColliderEnemy.collides(collider1, collider2):
+                        ColliderEnemy.collidersEnemy.remove(collider2)
+                        ColliderBullet.collidersBulletObstacle.remove(collider1)
+                        app.bulletRemove = collider1
+                        app.enemies.remove(collider2)
+                        app.score +=50
 
+                        return True
+        elif app.bossBattle:
+            for collider1 in ColliderBullet.collidersBulletObstacle:
+                if ColliderEnemy.collides(collider1, app.bowser):
+                    app.bulletRemove =collider1
+                    ColliderBullet.collidersBulletObstacle.remove(collider1)
+                    app.bowserLife -= 20
                     return True
+            for attack in app.bowserAttacks:
+                if ColliderEnemy.collides(attack, app.player):
+                    app.gameOver = True
+                    break
+                    
         for collider1 in app.rockets:
             if ColliderEnemy.collides(app.player.collider,collider1):
                 app.gameOver = True
@@ -80,12 +93,10 @@ class ColliderEnemy:
             if ColliderEnemy.collides(app.player.collider,collider1):
                 app.gameOver= True
                 break
-    def isCollisionBowser(app):
-        for collider1 in ColliderBullet.collidersBulletObstacle:
-            if ColliderEnemy.collides(collider1, app.bowser):
-                app.bowserLife -= 10
-                app.bulletRemoveAK47 = collider1
-                print('Hit')
+            
+        
+        
+    
                 
                 
                     
@@ -191,7 +202,7 @@ class ColliderObstacle:
             bottom2 = collider2.position.y + collider2.height
             #print(f'left1:{left1}  right1:{right1} top1:{top1} bottom1:{bottom1}/ left2:{left2}  right2:{right2} top2:{top2} bottom2:{bottom2}/')
            
-            if ((3314 < left1 -app.scrollX<3415 ) or (4130 < left1 -app.scrollX < 4282 )or (7335<left1 - app.scrollX < 7433))and top1 > bottom2:
+            if ((3258 < left1 -app.scrollX<3415 ) or (4130 < left1 -app.scrollX < 4282 )or (7335<left1 - app.scrollX < 7433))and top1 > bottom2:
                 app.floor = app.height + 100
                 return True
                 

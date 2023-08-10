@@ -4,12 +4,15 @@ from models.collider import ColliderBullet
 class Bullet(GameObject):
     bullets = []
     
-    def __init__(self, position, height,width,color):
+    def __init__(self, position, height,width,slope,person,color):
         super().__init__(position, height, width, color)
         self.yVelocity = 0
         self.isGrounded = False
-        ColliderBullet.collidersBulletObstacle.append(self)
-        Bullet.bullets.append(self)
+        if person == 'player':
+            ColliderBullet.collidersBulletObstacle.append(self)
+            Bullet.bullets.append(self)
+        self.slope = slope
+        
     
         
     def jump(bullet):
@@ -17,17 +20,27 @@ class Bullet(GameObject):
         
     def moveBullets(app):
         if app.powerUp:
-             for i in range(len(Bullet.bullets)):
-                Bullet.bullets[i].position.x += 10
+             for bullet in Bullet.bullets:
+                bullet.position.y += 10 * bullet.slope
+                bullet.position.x += 10
         else:
-            for i in range(len(Bullet.bullets)):
+            for bullet in Bullet.bullets:
 
-                Bullet.bullets[i].position.x += 5
-                Bullet.bullets[i].position.y += Bullet.bullets[i].yVelocity
-                Bullet.applyGravity(app,Bullet.bullets[i])
+                bullet.position.x += 5
+                bullet.position.y += bullet.yVelocity
+                Bullet.applyGravity(app, bullet)
+        if app.bossBattle:
+            Bullet.moveBowserAttack(app)
+    
+    def moveBowserAttack(app):
+        for attack in app.bowserAttacks:  
+            if attack.position.x > app.player.position.x + 300:
+                attack.slope = ((attack.position.y - app.player.position.y)/ (attack.position.x-app.player.position.x))
+            attack.position.y -= 10* attack.slope
+            attack.position.x -= 10 
             
     def applyGravity( app,bullet):    
-        if not ( bullet.position.y + bullet.height >= app.bulletFloor):
+        if not (bullet.position.y + bullet.height >= app.bulletFloor):
                 #print(bullet.position.x, bullet.position.y, bullet.isGrounded)
                 bullet.isGrounded = False
                 bullet.yVelocity += app.gravityInterval

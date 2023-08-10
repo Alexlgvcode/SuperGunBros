@@ -42,6 +42,8 @@ def onAppStart(app):
     app.rocket = Image.open('assets/Rocket.png')
     app.shell = Image.open('assets/Shell.png')
     app.bowserImage = Image.open('assets/Bowser.png')
+    app.bottomImage = Image.open('assets/BottomMap.png')
+    app.bowserTitle = Image.open('assets/bowserTitle.png')
     
     
     spritestripright = Image.open('assets/MarioRun2.png')
@@ -71,7 +73,7 @@ def restart(app):
     
     
     app.timerShell =100
-    app.timerRocket = 200
+    app.timerRocket = 300
     app.bossBattle = False
     app.bossBattleStart = False
     app.gameStartScreen = True
@@ -83,7 +85,7 @@ def restart(app):
     
     app.powerUp = False
     app.bulletRemove = None
-    app.bulletRemoveAK47 = None
+
     app.enemyRemove = None
     app.enemyRunLeft = True
     app.enemyRunRight = False
@@ -129,43 +131,46 @@ def restart(app):
     app.rockets = []
     
     app.shells =[]
+    
+    app.bowserAttacks = []
+    
     app.obstacles = [
                      Obstacle(Vector2(1350, app.ground - 90),100, 90, app.blockColor),
                      Obstacle(Vector2(960 , app.ground - 190),50, 240, app.blockColor),
                      Obstacle(Vector2(1830 , app.ground - 145),150, 90, app.blockColor),
                      Obstacle(Vector2(2216 , app.ground - 187),187, 80, app.blockColor),
                      Obstacle(Vector2(2738 , app.ground - 187),187, 82, app.blockColor),
-                     Obstacle(Vector2(3250 , app.ground),200, 50, app.blockColor),
+                     Obstacle(Vector2(3200 , app.ground),200, 50, app.blockColor),
                      Obstacle(Vector2(3405 , app.ground),200, 50, app.blockColor),
-                     Obstacle(Vector2(3690, app.ground - 190),50, 145, app.blockColor),
+                     Obstacle(Vector2(3645, app.ground - 190),50, 180, app.blockColor),
                      Obstacle(Vector2(3830, app.ground - 385),50, 380, app.blockColor),
                      Obstacle(Vector2(4060, app.ground),200, 50, app.blockColor),
                      Obstacle(Vector2(4260 , app.ground),200, 50, app.blockColor),
                      Obstacle(Vector2(4355 , app.ground - 385),50, 195, app.blockColor),
-                     Obstacle(Vector2(4786 ,app.ground-193), 50,100, app.blockColor),
+                     Obstacle(Vector2(4786 ,app.ground-193), 50,140, app.blockColor),
                      Obstacle(Vector2(5605,app.ground-193), 50,100, app.blockColor),
                      Obstacle(Vector2(5800 ,app.ground-381), 50,145, app.blockColor),
                      Obstacle(Vector2(6135 ,app.ground-381), 50,195, app.blockColor),
                      Obstacle(Vector2(6425,app.ground-100), 100,90, app.blockColor),
-                     Obstacle(Vector2(6525 ,app.ground-190), 200,90, app.blockColor),
-                     Obstacle(Vector2(6730 ,app.ground-190), 200,75, app.blockColor),
-                     Obstacle(Vector2(6815,app.ground-90), 90,315, app.blockColor),
-                     Obstacle(Vector2(7165,app.ground-180), 180,85, app.blockColor),
-                     Obstacle(Vector2(7260,app.ground-280), 280,80, app.blockColor),
-                     Obstacle(Vector2(7435 ,app.ground-190), 200,90, app.blockColor),
-                     Obstacle(Vector2(7538 ,app.ground-95), 95,95, app.blockColor),
+                     Obstacle(Vector2(6525 ,app.ground-190), 200,160, app.blockColor),
+                     
+                     Obstacle(Vector2(6730,app.ground-90), 90,315, app.blockColor),
+                     Obstacle(Vector2(7060,app.ground-180), 180,120, app.blockColor),
+                     Obstacle(Vector2(7210,app.ground-280), 280,140, app.blockColor),
+                     Obstacle(Vector2(7490 ,app.ground-190), 200,90, app.blockColor),
+                     Obstacle(Vector2(7590,app.ground-95), 95,85, app.blockColor),
                      Obstacle(Vector2(7815, app.ground - 90),100, 85, app.blockColor),
-                     Obstacle(Vector2(8055, app.ground - 190),50,190, app.blockColor),
-                     Obstacle(Vector2(8585, app.ground - 90),100, 180, app.blockColor),
-                     Obstacle(Vector2(8780, app.ground - 190),190, 80, app.blockColor),
-                     Obstacle(Vector2(8875, app.ground - 280),290, 120, app.blockColor),
-                     Obstacle(Vector2(9025, app.ground - 380),390, 120, app.blockColor),
+                     Obstacle(Vector2(8005, app.ground - 190),50,190, app.blockColor),
+                     Obstacle(Vector2(8535, app.ground - 90),100, 130, app.blockColor),
+                     Obstacle(Vector2(8680, app.ground - 190),190, 130, app.blockColor),
+                     Obstacle(Vector2(8845 , app.ground - 280),290, 110, app.blockColor),
+                     Obstacle(Vector2(8975, app.ground - 380),390, 160, app.blockColor),
                      ]
     
 
     app.luckyBlock = Obstacle(Vector2(8332, 400),50, 50, app.blockColor)
     
-    app.bowser = Enemy(Vector2(1110,app.ground - 390), 191,230,'black')
+    app.bowser = Enemy(Vector2(1110,220), 191,230,'black')
     app.bowserLife = 500
     
 def player(app):
@@ -225,6 +230,8 @@ def redrawAll(app):
         drawBullets(app)
         drawPlayer(app)
         drawEnemy(app)
+        if app.bossBattle:
+            drawPipe(app)
         
     
     debug(app)
@@ -295,12 +302,16 @@ def drawPipe(app):
     drawImage('assets/PipeVert.png', 200,-20)
     drawImage('assets/PipeVert.png', 500,-20)
     drawImage('assets/PipeVert.png', 800, -20)
-    drawImage('assets/PipeLeft.png',1135,app.ground-135)
-        
+    drawImage('assets/PipeLeft.png',1135,app.ground-150)
+    drawImage(CMUImage(app.bottomImage),0,610)
+    
 def drawBossBattle(app):
     drawImage(CMUImage(app.marioBossMap),0,0)
-    drawPipe(app)
-    drawRect(540,200,app.bowserLife,20, fill = 'red')
+    drawImage(CMUImage(app.bowserTitle),500,200)
+    if app.bowserLife >= 20:
+        drawRect(350,250,app.bowserLife,20, fill = 'red')
+    drawRect(350,250,500,20, border = 'red', fill = None)
+    
     
 #------PLAYER CHARACTER--------
 def drawPlayer(app):
@@ -336,16 +347,20 @@ def drawEnemy(app):
         for shell in app.shells:
             drawImage(CMUImage(app.shell),shell.position.x, shell.position.y)
         drawImage(CMUImage(app.bowserImage), app.bowser.position.x, app.bowser.position.y)
+        
    # for enemy in ColliderEnemy.collidersEnemy:
        # drawRect()
 
 
 def drawBullets(app):
-   for bullet in Bullet.bullets:
+    for bullet in Bullet.bullets:
        if app.powerUp:
             drawRect(bullet.position.x,bullet.position.y,bullet.height,bullet.width, border = 'red')
        else:
             drawImage('assets/Fireball.png',bullet.position.x,bullet.position.y)
+            
+    for attack in app.bowserAttacks:
+        drawRect(attack.position.x, attack.position.y, attack.height, attack.width, border = 'red')
 
         #drawRect(ColliderObstacle.collidersObstacle[0].position.x, ColliderObstacle.collidersObstacle[0].position.y, ColliderObstacle.collidersObstacle[0].width, ColliderObstacle.collidersObstacle[0].height, fill = None, border = 'red')
 
@@ -363,9 +378,10 @@ def onKeyPress(app,key):
         app.debug = not app.debug
     if key == 'w':
         if app.powerUp:
-            Bullet(Vector2(app.player.position.x+ app.player.width, app.player.position.y + (app.player.height//2)),20,10, 'red' )
+            slope = ((app.aimY - app.player.position.y)/ (app.aimX-app.player.position.x))
+            Bullet(Vector2(app.player.position.x+ app.player.width, app.player.position.y + (app.player.height//2)),20,10,slope,'player', 'red' )
         else:
-            Bullet(Vector2(app.player.position.x+ app.player.width, app.player.position.y + (app.player.height//2)),43,42, 'red' )
+            Bullet(Vector2(app.player.position.x+ app.player.width, app.player.position.y + (app.player.height//2)),43,42,0, 'player', 'red' )
     if key == 't':
         app.model = not app.model
         if not app.model:
@@ -440,32 +456,40 @@ def playerIdle(app):
         app.playerRunLeft = False
         app.playerJump = False
         
-
-
-    
+        
 def onMousePress(app,mouseX, mouseY):
-    if 520 <= mouseX  <= 758 and 520 <= mouseY<= 604:
-        app.gameStartScreen = False
-        app.paused = False
-    if 480 <= mouseX <=790 and 400 <= mouseY<= 465:
-        app.howToPlayScreen = True
-    if 500 <= mouseY <= 575 and 175 <= mouseX <= 250:
-        app.howToPlayScreen = False
+    
+    if app.paused: 
+        if 520 <= mouseX  <= 758 and 520 <= mouseY<= 604:
+            app.gameStartScreen = False
+            app.paused = False
+        if 480 <= mouseX <=790 and 400 <= mouseY<= 465:
+            app.howToPlayScreen = True
+        if 500 <= mouseY <= 575 and 175 <= mouseX <= 250:
+            app.howToPlayScreen = False
+    
         
 
 def onMouseMove(app,mouseX,mouseY):
-    if 520 <= mouseX  <= 758 and 520 <= mouseY<= 604:
-        app.hoverStart = True
-    elif 480 <= mouseX <=790 and 400 <= mouseY<= 465:
-        app.hoverHowTo = True
-    else:
-        app.hoverHowTo = False
-        app.hoverStart = False
+    app.aimX = mouseX
+    app.aimY = mouseY
+    if app.paused:
+        if 520 <= mouseX  <= 758 and 520 <= mouseY<= 604:
+            app.hoverStart = True
+        elif 480 <= mouseX <=790 and 400 <= mouseY<= 465:
+            app.hoverHowTo = True
+        else:
+            app.hoverHowTo = False
+            app.hoverStart = False
 
 def reloadEnemy(app):
     moveEnemy(app)
     for enemy in app.enemies: 
-        enemy.position.x = enemy.startingX + app.scrollX        
+        enemy.position.x = enemy.startingX + app.scrollX
+    if app.bowserLife <= 0:
+        app.gameWon = True  
+        app.gameWonScreen = True
+        app.paused = True      
     Enemy.outOfBounds(app)
     
 def reloadObstacle(app):
@@ -473,6 +497,16 @@ def reloadObstacle(app):
         obstacle.position.x = obstacle.startingX + app.scrollX
     app.luckyBlock.position.x = app.luckyBlock.startingX + app.scrollX
 
+def reloadBullet(app):
+    if app.bossBattle:
+        for bullet in Bullet.bullets:
+            if bullet.position.x > app.width:
+                Bullet.bullets.remove(bullet)
+        for attack in app.bowserAttacks:
+            
+            
+            if 0>attack.position.x or 0>attack.position.y:
+                app.bowserAttacks.remove(attack)
         
 def moveEnemy(app):
     for enemy in app.enemies:
@@ -495,7 +529,7 @@ def moveEnemy(app):
             Enemy.slideLeft(shell)
             if shell.position.x < -app.shell.width:
                 app.shells.remove(shell)
-        
+
 def bossBattle(app):
     if  app.bossBattleStart:
         
@@ -509,6 +543,7 @@ def bossBattle(app):
         app.obstacles = [Obstacle(Vector2(0, app.ground - 140),150, 100, app.blockColor),
                          Obstacle(Vector2(1056, app.ground - 190),50, 250, app.blockColor),
                          Obstacle(Vector2(1140, app.ground - 140),150, 200, app.blockColor)]
+        
 def randomXvalue():
         location = random.randint(1,3)
         position =0
@@ -522,20 +557,23 @@ def randomXvalue():
         return position
     
 def bowserAttack(app):
-    pass
+    if app.ticks % 150 == 0 and app.bossBattle :
+        app.bowserAttacks.append(Bullet(Vector2(1110, 220),20,20,0,'bowser', 'red' ))
+
+
 def onStep(app):    
     
     if not app.paused and not app.gameStartScreen and not app.gameOver and not app.playerHide:
         app.ticks +=1
+        if app.ticks % 400 == 0 and app.bossBattle:
+            app.timerRocket += 50
+            app.timerShell += 50
         if app.ticks % app.timerRocket == 0 and app.bossBattle:
             app.rockets.append(Enemy(Vector2(randomXvalue(), app.rocketY), 95,95,'blue'))
             
-        if app.ticks % 500 == 0 and app.bossBattle:
-            app.timerRocket += 50
-            app.timerShell += 50
-            print(True)
+            
         if app.ticks % app.timerShell == 0 and app.bossBattle:
-            app.shells.append(Enemy(Vector2(app.width, app.ground - 75), 75,75,'blue'))
+            app.shells.append(Enemy(Vector2(app.width, app.ground - 85), 75,75,'blue'))
         if app.ticks %5== 0 :
             app.spriteCounter = (1 + app.spriteCounter) % len(app.sprites)
             
@@ -543,15 +581,17 @@ def onStep(app):
              app.timeLeft -=1
         reloadEnemy(app)
         reloadObstacle(app)
+        reloadBullet(app)
         playerIdle(app)
-    
+        
+        bowserAttack(app)
+        print(len(app.bowserAttacks))
         
         if ColliderBullet.isCollisionObstacle(app):
             Bullet.bullets.remove(app.bulletRemove)
-        if ColliderEnemy.isCollision(app) and not app.bossBattle:
+            
+        if ColliderEnemy.isCollision(app):
             Bullet.bullets.remove(app.bulletRemove)
-        elif ColliderEnemy.isCollisionBowser(app) and app.bossBattle:
-            Bullet.bullets.remove(app.bulletRemoveAK47)
             
         
     
