@@ -5,6 +5,7 @@ class Collider:
         self.position = position
         self.height = height
         self.width = width
+        
 class ColliderEnemy:
     collidersEnemy =[] 
     
@@ -64,6 +65,7 @@ class ColliderEnemy:
             if ColliderEnemy.collides(app.player.collider, collider2):
                 app.gameOver =True
                 break
+            
         if not app.bossBattle:
             for collider1 in ColliderBullet.collidersBulletObstacle:
                 for collider2 in ColliderEnemy.collidersEnemy:  
@@ -73,14 +75,15 @@ class ColliderEnemy:
                         app.bulletRemove = collider1
                         app.enemies.remove(collider2)
                         app.score +=50
-
                         return True
+                    
         elif app.bossBattle:
             for collider1 in ColliderBullet.collidersBulletObstacle:
                 if ColliderEnemy.collides(collider1, app.bowser):
                     app.bulletRemove =collider1
                     ColliderBullet.collidersBulletObstacle.remove(collider1)
                     app.bowserLife -= 20
+                    app.score += 25
                     return True
             for attack in app.bowserAttacks:
                 if ColliderEnemy.collides(attack, app.player):
@@ -165,14 +168,8 @@ class ColliderBullet:
                     ColliderBullet.collidersBulletObstacle.remove(collider1)
                     app.bulletRemove = collider1
                     return True
-        
-                    
-        
-                    
 
-    
 
-    
 class ColliderObstacle:
 
     collidersObstacle = []
@@ -209,12 +206,19 @@ class ColliderObstacle:
             bottom1 = collider1.position.y + collider1.height
             right2 = collider2.position.x + collider2.width
             bottom2 = collider2.position.y + collider2.height
-           
-            if (((3258 < left1 -app.scrollX and right1-app.scrollX<3400 ) or 
-                (4130 < left1 -app.scrollX and right1-app.scrollX < 4260 )or 
-                (7335<left1 - app.scrollX and right1-app.scrollX < 7433))and 
-                (top1 > bottom2)):
-                app.floor = app.height + 100
+            
+            dropZone1 = (3258,3400)
+            dropZone2 = (4130,4260)
+            dropZone3 = (7335,7433)
+            if (((dropZone1[0] < left1 -app.scrollX and 
+                  right1-app.scrollX<dropZone1[1]) 
+                 or(dropZone2[0] < left1 -app.scrollX and 
+                  right1-app.scrollX < dropZone2[1])
+                 or (dropZone3[0]<left1 - app.scrollX and 
+                     right1-app.scrollX < dropZone3[1]))and (top1 > bottom2)):
+                
+                extraZone = 100
+                app.floor = app.height + extraZone
                 return True
                 
                 
@@ -279,48 +283,18 @@ class ColliderObstacle:
                 break
             
         for collider2 in ColliderObstacle.collidersObstacle:
-            if ColliderObstacle.collidesBot(app,app.player.collider,collider2 ):
+            if ColliderObstacle.collidesBot(app,app.player.collider,collider2):
                 break
           
         for collider2 in ColliderObstacle.collidersObstacle:
-            if ColliderObstacle.collidesLeft(app,app.player.collider,collider2 ):
+            if ColliderObstacle.collidesLeft(app,app.player.collider,collider2):
                 break
             else:
                 app.stopMovementLeft = False
                 
         for collider2 in ColliderObstacle.collidersObstacle:   
-            if ColliderObstacle.collidesRight(app,app.player.collider,collider2 ):
+            if ColliderObstacle.collidesRight(app,app.player.collider,collider2):
                 break
             else:
                 app.stopMovementRight = False
         
-        
-                
-                
-    
-    
-    
-    
-    
-    
-    
-   
-    
-                    
-
-    
-                    
-                
-    
-    
-    
-    
-    
-    
-    
-   
-    
-                    
-
-    
-                    

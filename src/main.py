@@ -228,6 +228,7 @@ def redrawAll(app):
         
     elif app.gameOver:
         drawImage('assets/GameOverScreen.png',0,0)
+        drawLabel(f'Score:{app.score}',app.width//2,app.height//2 +55, size = 30, fill = 'white', bold = True )
     elif app.pauseScreen:
         drawImage('assets/PausedScreen.png',0,0)
     
@@ -313,6 +314,7 @@ def drawPipe(app):
 def drawBossBattle(app):
     drawImage(CMUImage(app.marioBossMap),0,0)
     drawImage(CMUImage(app.bowserTitle),500,200)
+    drawLabel(f'Score:{app.score}',app.width//2-50,300, size = 30, fill = 'white', bold = True )
     if app.bowserLife >= 20:
         drawRect(350,250,app.bowserLife,20,fill = 'red')
     drawRect(350,250,500,20, border = 'red',fill = None)
@@ -581,7 +583,7 @@ def randomXvalue():
         return position
     
 def bowserAttack(app):
-    if app.ticks % 150 == 0 and app.bossBattle :
+    if app.ticks % 100  == 0 and app.bossBattle :
         app.bowserAttacks.append(Bullet(Vector2(1110, 220),
                                         20,20,0,'bowser', 'red' ))
 

@@ -7,33 +7,35 @@ class Player(GameObject):
         super().__init__(position, height, width, color)
         self.yVelocity = 0
         self.isGrounded = True
+        self.speed = 8
        
     
     def jump(self, app):
         self.yVelocity = -app.jumpHeight
     
     def moveLeft(self):
-        self.position.x -= 8
+        self.position.x -= self.speed
     
-    def sprintLeft(self):
-        self.position.x -= 20
-    def sprintRight(self):
-        self.position.x += 20
         
     
     def moveRight(self):
-        self.position.x += 8
+        self.position.x += self.speed
 
     def playerWin(self,app):
-        if self.position.x >= 626 and app.scrollX <= -8836 and not app.bossBattle:
+        flagPosition = 626
+        scrollingIndex = -8836
+        if (self.position.x >= flagPosition and 
+            app.scrollX <= -scrollingIndex and 
+            not app.bossBattle):
             
-            if app.player.position.x <= 930:
+            castlePosition = 930
+            if app.player.position.x <= castlePosition:
                 Player.moveRight(self)
-            elif app.player.position.x >=930:
+            elif app.player.position.x >= castlePosition:
                 app.bossBattle = True
                 app.bossBattleStart = True
-            
-        if app.bossBattleStart and app.player.position.x < 184:
+        startingPosition = 184
+        if app.bossBattleStart and app.player.position.x < startingPosition:
             Player.moveRight(self)
         
             

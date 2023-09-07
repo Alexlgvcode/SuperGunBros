@@ -10,8 +10,6 @@ class Enemy(GameObject):
         self.moveLeft = True
         
     def load(app):
-        
-            
         enemies = app.enemies
         ColliderEnemy.collidersEnemy = []
         for enemy in enemies:
